@@ -1,0 +1,699 @@
+/* src/components/TransactionForm.css */
+
+/* ========= VARIÁVEIS DE TEMA ========= */
+.transaction-form-container {
+  --primary-color: #667eea;
+  --primary-hover: #5a67d8;
+  --success-color: #10b981;
+  --danger-color: #ef4444;
+  --surface: #ffffff;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-tertiary: #94a3b8;
+  --border: #e2e8f0;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.transaction-form-container.dark {
+  --surface: #2d3748;
+  --text-primary: #f9fafb;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  --border: #4b5563;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* ========= CONTAINER PRINCIPAL ========= */
+.transaction-form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  transition: all 0.3s ease;
+}
+
+.transaction-form-container.dark {
+  background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+}
+
+/* ========= HEADER ========= */
+.transaction-form-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+}
+
+.transaction-form-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-color), #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.transaction-form-subtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* ========= FORMULÁRIO ========= */
+.transaction-form {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.transaction-form:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(102, 126, 234, 0.15);
+}
+
+.form-section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border);
+}
+
+/* ========= GRUPOS DE FORMULÁRIO ========= */
+.form-group {
+  margin-bottom: 2rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-label.required::after {
+  content: " *";
+  color: var(--danger-color);
+}
+
+/* ========= INPUTS ========= */
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  transform: translateY(-1px);
+}
+
+.form-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* ========= CAMPO DE VALOR ========= */
+.currency-input {
+  position: relative;
+}
+
+.currency-prefix {
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 600;
+  color: var(--text-secondary);
+  z-index: 10;
+}
+
+.currency-input-field {
+  padding-left: 4rem !important;
+}
+
+/* ========= RADIO BUTTONS MODERNOS ========= */
+.radio-group {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.radio-option {
+  flex: 1;
+  min-width: 140px;
+}
+
+.radio-input {
+  display: none;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+  user-select: none;
+  color: var(--text-primary);
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+
+.radio-label::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.radio-label:hover::before {
+  left: 100%;
+}
+
+.radio-label:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.radio-input:checked + .radio-label {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.radio-input:checked + .radio-label::after {
+  content: "✓";
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Ícones para os tipos */
+.radio-label .icon {
+  font-size: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.radio-input:checked + .radio-label .icon {
+  transform: scale(1.1);
+}
+
+/* Cores específicas para Receita/Despesa */
+.income-option {
+  border-color: rgba(34, 197, 94, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.05),
+    rgba(34, 197, 94, 0.02)
+  );
+}
+
+.income-option:hover {
+  border-color: #10b981;
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.1),
+    rgba(34, 197, 94, 0.05)
+  );
+}
+
+.income-option.checked {
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-color: #10b981;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.expense-option {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.05),
+    rgba(239, 68, 68, 0.02)
+  );
+}
+
+.expense-option:hover {
+  border-color: #ef4444;
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.1),
+    rgba(239, 68, 68, 0.05)
+  );
+}
+
+.expense-option.checked {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border-color: #ef4444;
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+}
+
+/* Cores para tipos de transação */
+.transaction-type-avulsa {
+  border-color: rgba(59, 130, 246, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.05),
+    rgba(59, 130, 246, 0.02)
+  );
+}
+
+.transaction-type-avulsa:hover {
+  border-color: #3b82f6;
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.1),
+    rgba(59, 130, 246, 0.05)
+  );
+}
+
+.transaction-type-avulsa.checked {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-color: #3b82f6;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+.transaction-type-parcelada {
+  border-color: rgba(168, 85, 247, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(168, 85, 247, 0.05),
+    rgba(168, 85, 247, 0.02)
+  );
+}
+
+.transaction-type-parcelada:hover {
+  border-color: #a855f7;
+  background: linear-gradient(
+    135deg,
+    rgba(168, 85, 247, 0.1),
+    rgba(168, 85, 247, 0.05)
+  );
+}
+
+.transaction-type-parcelada.checked {
+  background: linear-gradient(135deg, #a855f7, #9333ea);
+  border-color: #a855f7;
+  box-shadow: 0 8px 25px rgba(168, 85, 247, 0.3);
+}
+
+.transaction-type-recorrente {
+  border-color: rgba(14, 165, 233, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(14, 165, 233, 0.05),
+    rgba(14, 165, 233, 0.02)
+  );
+}
+
+.transaction-type-recorrente:hover {
+  border-color: #0ea5e9;
+  background: linear-gradient(
+    135deg,
+    rgba(14, 165, 233, 0.1),
+    rgba(14, 165, 233, 0.05)
+  );
+}
+
+.transaction-type-recorrente.checked {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  border-color: #0ea5e9;
+  box-shadow: 0 8px 25px rgba(14, 165, 233, 0.3);
+}
+
+/* Modo escuro para os radio buttons */
+.transaction-form-container.dark .radio-label {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.transaction-form-container.dark .income-option {
+  border-color: rgba(34, 197, 94, 0.4);
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.1),
+    rgba(34, 197, 94, 0.05)
+  );
+}
+
+.transaction-form-container.dark .expense-option {
+  border-color: rgba(239, 68, 68, 0.4);
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.1),
+    rgba(239, 68, 68, 0.05)
+  );
+}
+
+.transaction-form-container.dark .transaction-type-avulsa {
+  border-color: rgba(59, 130, 246, 0.4);
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.1),
+    rgba(59, 130, 246, 0.05)
+  );
+}
+
+.transaction-form-container.dark .transaction-type-parcelada {
+  border-color: rgba(168, 85, 247, 0.4);
+  background: linear-gradient(
+    135deg,
+    rgba(168, 85, 247, 0.1),
+    rgba(168, 85, 247, 0.05)
+  );
+}
+
+.transaction-form-container.dark .transaction-type-recorrente {
+  border-color: rgba(14, 165, 233, 0.4);
+  background: linear-gradient(
+    135deg,
+    rgba(14, 165, 233, 0.1),
+    rgba(14, 165, 233, 0.05)
+  );
+}
+
+/* ========= CHECKBOX ========= */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 1rem;
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.checkbox-label:hover {
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.checkbox-input {
+  margin-right: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--primary-color);
+}
+
+/* ========= SEÇÕES ESPECIAIS ========= */
+.special-section {
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  border: 2px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.parcelada-section {
+  background: rgba(59, 130, 246, 0.05);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.recorrente-section {
+  background: rgba(34, 197, 94, 0.05);
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.transaction-form-container.dark .parcelada-section {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.transaction-form-container.dark .recorrente-section {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+/* ========= INFORMAÇÕES ========= */
+.info-text {
+  font-size: 0.875rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.parcela-info {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.recorrente-info {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.transaction-form-container.dark .parcela-info {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
+
+.transaction-form-container.dark .recorrente-info {
+  background: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+}
+
+/* ========= BOTÕES ========= */
+.submit-button {
+  width: 100%;
+  padding: 1.25rem 2rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.submit-button.loading {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Botões coloridos por tipo */
+.income-button {
+  background: var(--success-color);
+}
+
+.income-button:hover:not(:disabled) {
+  background: #0da271;
+}
+
+.expense-button {
+  background: var(--danger-color);
+}
+
+.expense-button:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+/* ========= NAVEGAÇÃO ========= */
+.form-navigation {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.nav-button {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  text-decoration: none;
+}
+
+.nav-button:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+/* ========= MENSAGENS ========= */
+.success-message {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid #a7f3d0;
+  margin: 1.5rem 0;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.error-message {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid #fecaca;
+  margin: 1.5rem 0;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.transaction-form-container.dark .success-message {
+  background: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.transaction-form-container.dark .error-message {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* ========= RESPONSIVIDADE ========= */
+@media (max-width: 768px) {
+  .transaction-form-container {
+    padding: 1rem 0.5rem;
+  }
+
+  .transaction-form {
+    padding: 2rem 1.5rem;
+    margin: 0 0.5rem;
+  }
+
+  .transaction-form-title {
+    font-size: 2rem;
+  }
+
+  .radio-group {
+    flex-direction: column;
+  }
+
+  .radio-option {
+    min-width: auto;
+  }
+
+  .form-navigation {
+    flex-direction: column;
+  }
+
+  .nav-button {
+    width: 100%;
+  }
+
+  .transaction-form-header {
+    margin-bottom: 2rem;
+    padding: 1rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .transaction-form {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .transaction-form-title {
+    font-size: 1.75rem;
+  }
+
+  .form-section-title {
+    font-size: 1.25rem;
+  }
+
+  .submit-button {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .radio-label {
+    padding: 0.875rem 1.25rem;
+  }
+}
+
+/* ========= ANIMAÇÕES ========= */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.transaction-form {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.success-message,
+.error-message {
+  animation: fadeInUp 0.3s ease-out;
+}

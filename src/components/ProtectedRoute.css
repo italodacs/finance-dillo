@@ -1,0 +1,98 @@
+/* src/components/ProtectedRoute.css */
+.protected-route-loading {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.loading-content {
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.security-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: security-spin 1.5s linear infinite;
+  margin: 0 auto 1.5rem;
+}
+
+@keyframes security-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-content h3 {
+  color: #374151;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.loading-content p {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.protected-route-denied {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+}
+
+.denied-content {
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid #fecaca;
+  max-width: 400px;
+  width: 90%;
+}
+
+.denied-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.denied-content h3 {
+  color: #dc2626;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.denied-content p {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.login-redirect-button {
+  padding: 0.75rem 1.5rem;
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-redirect-button:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
