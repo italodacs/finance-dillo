@@ -21,7 +21,7 @@ import "./styles.css";
 
 // Se o arquivo MobileOptimizations.css existir, importe. Se não, ignore.
 try {
-  require("./styles/MobileOptimizations.css");
+  require("./MobileOptimizations.css"); // ✅ caminho real (sem pasta "styles")
 } catch (error) {
   console.log("MobileOptimizations.css não encontrado, usando CSS padrão");
 }
