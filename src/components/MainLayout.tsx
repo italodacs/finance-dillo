@@ -2,7 +2,7 @@
 import { ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
-import logo from "../assets/Dillosemfundo.png";
+import logo from "../assets/dillosemfundo.png"; // <- importa do src/assets
 import "./MainLayout.css";
 
 interface MainLayoutProps {
@@ -49,7 +49,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             </span>
           </div>
 
-          {/* Nav */}
+          {/* Navegação */}
           <nav className={`nav-tabs ${isDarkMode ? "dark" : ""}`}>
             {navItems.map((item) => (
               <button
@@ -65,7 +65,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             ))}
           </nav>
 
-          {/* Tema */}
+          {/* Toggle de tema */}
           <button
             onClick={toggleTheme}
             className={`theme-toggle ${isDarkMode ? "dark" : ""}`}

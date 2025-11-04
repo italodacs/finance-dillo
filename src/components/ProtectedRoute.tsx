@@ -1,136 +1,68 @@
 // src/components/ProtectedRoute.tsx
-import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
+import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
+import { supabase } from "../lib/supabase"; // <- ajuste conforme o seu arquivo real
 import "./ProtectedRoute.css";
 
 interface ProtectedRouteProps {
-  children: React.ReactNode;
-  requiredRole?: string;
+  children: ReactNode;
 }
 
-export const ProtectedRoute = ({
-  children,
-  requiredRole,
-}: ProtectedRouteProps) => {
-  const [loading, setLoading] = useState(true);
-  const [authenticated, setAuthenticated] = useState(false);
+export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    const checkAuthentication = async () => {
+    const bootstrap = async () => {
       try {
-        setLoading(true);
-
-        // 1. Verificar se há sessão ativa
-        const {
-          data: { session },
-          error: sessionError,
-        } = await supabase.auth.getSession();
-
-        if (sessionError) {
-          console.error("Erro ao verificar sessão:", sessionError);
-          throw sessionError;
-        }
-
+        const { data } = await supabase.auth.getSession();
+        const session = data.session;
+        setAuthenticated(!!session);
         if (!session) {
-          console.log(
-            "❌ Nenhuma sessão encontrada, redirecionando para login..."
-          );
           navigate("/login", { replace: true });
-          return;
         }
-
-        // 2. Verificar se o token é válido e obter usuário
-        const {
-          data: { user },
-          error: userError,
-        } = await supabase.auth.getUser();
-
-        if (userError) {
-          console.error("Erro ao obter usuário:", userError);
-          throw userError;
-        }
-
-        if (!user) {
-          console.log("❌ Usuário não encontrado, redirecionando...");
-          await supabase.auth.signOut();
-          navigate("/login", { replace: true });
-          return;
-        }
-
-        // 3. Verificar se o email foi confirmado (opcional)
-        if (!user.email_confirmed_at) {
-          console.warn("⚠️ Email não confirmado, mas permitindo acesso");
-          // Você pode redirecionar para uma página de confirmação se quiser
-        }
-
-        // 4. Verificar role se necessário
-        if (requiredRole) {
-          const userRole = user.role || "authenticated";
-          if (userRole !== requiredRole) {
-            console.log("❌ Permissão insuficiente, redirecionando...");
-            navigate("/unauthorized", { replace: true });
-            return;
-          }
-        }
-
-        console.log("✅ Usuário autenticado com sucesso:", user.email);
-        setAuthenticated(true);
-      } catch (error: any) {
-        console.error("❌ Erro na verificação de autenticação:", error);
-
-        // Limpar sessão corrompida
-        await supabase.auth.signOut();
-
-        // Redirecionar para login com mensagem de erro
-        navigate("/login", {
-          replace: true,
-          state: { error: "Sessão expirada. Faça login novamente." },
-        });
+      } catch (e) {
+        console.error("Erro ao obter sessão:", e);
+        setAuthenticated(false);
+        navigate("/login", { replace: true });
       } finally {
         setLoading(false);
       }
     };
 
-    checkAuthentication();
+    bootstrap();
 
-    // 5. Ouvir mudanças de autenticação em tempo real
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Evento de autenticação:", event);
+    const { data } = supabase.auth.onAuthStateChange(
+      (event: AuthChangeEvent, session: Session | null) => {
+        console.log("Evento de autenticação:", event);
 
-      if (event === "SIGNED_OUT" || event === "USER_DELETED" || !session) {
-        console.log("🔐 Usuário deslogado, redirecionando...");
-        setAuthenticated(false);
-        navigate("/login", { replace: true });
+        // eventos que efetivamente deslogam
+        if (event === "SIGNED_OUT" || !session) {
+          setAuthenticated(false);
+          navigate("/login", { replace: true });
+          return;
+        }
+
+        if (event === "SIGNED_IN" && session) {
+          setAuthenticated(true);
+        }
       }
+    );
 
-      if (event === "TOKEN_REFRESHED") {
-        console.log("🔄 Token renovado com sucesso");
-      }
-
-      if (event === "SIGNED_IN") {
-        console.log("🔐 Usuário logado, verificando...");
-        // Recarregar a verificação quando o usuário fizer login
-        checkAuthentication();
-      }
-    });
-
-    // Cleanup
     return () => {
-      subscription.unsubscribe();
+      data.subscription.unsubscribe();
     };
-  }, [navigate, requiredRole]);
+  }, [navigate]);
 
   if (loading) {
     return (
       <div className="protected-route-loading">
         <div className="loading-content">
-          <div className="security-spinner"></div>
-          <h3>Verificando segurança...</h3>
-          <p>Estamos confirmando suas credenciais</p>
+          <div className="security-spinner" />
+          <h3>Verificando sua sessão…</h3>
+          <p>Garantindo a segurança dos seus dados.</p>
         </div>
       </div>
     );
@@ -140,14 +72,14 @@ export const ProtectedRoute = ({
     return (
       <div className="protected-route-denied">
         <div className="denied-content">
-          <div className="denied-icon">🔒</div>
-          <h3>Acesso Negado</h3>
-          <p>Você não tem permissão para acessar esta página</p>
+          <div className="denied-icon">🔐</div>
+          <h3>Acesso restrito</h3>
+          <p>Faça login para continuar.</p>
           <button
-            onClick={() => navigate("/login")}
             className="login-redirect-button"
+            onClick={() => navigate("/login", { replace: true })}
           >
-            Fazer Login
+            Ir para o login
           </button>
         </div>
       </div>

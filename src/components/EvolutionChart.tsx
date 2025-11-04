@@ -82,7 +82,7 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
                 position: "top",
                 labels: {
                   color: isDarkMode ? "white" : "#374151",
-                  font: { size: 14, weight: "600" },
+                  font: { size: 14, weight: 600 },
                   padding: 20,
                   usePointStyle: true,
                 },
