@@ -12,28 +12,34 @@ interface EvolutionChartProps {
 }
 
 export const EvolutionChart = ({ data }: EvolutionChartProps) => {
-  const chartRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const chartInstanceRef = useRef<any | null>(null);
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
 
   useEffect(() => {
-    if (!chartRef.current || !data.months.length) return;
+    if (!canvasRef.current || !data.months.length) return;
 
-    // Usar importação dinâmica para evitar problemas de registro
     const initChart = async () => {
       try {
         const Chart = (await import("chart.js/auto")).default;
 
-        const ctx = chartRef.current!.getContext("2d");
-        if (!ctx) return;
-
-        // Destruir gráfico anterior se existir
-        const existingChart = Chart.getChart(chartRef.current);
-        if (existingChart) {
-          existingChart.destroy();
+        // ✅ destrói gráfico anterior se existir
+        if (chartInstanceRef.current) {
+          chartInstanceRef.current.destroy();
+          chartInstanceRef.current = null;
+        } else if (canvasRef.current) {
+          // ✅ forçamos o TS a aceitar o tipo não nulo
+          const existing = Chart.getChart(
+            canvasRef.current as HTMLCanvasElement
+          );
+          if (existing) existing.destroy();
         }
 
-        new Chart(ctx, {
+        const ctx = canvasRef.current?.getContext("2d");
+        if (!ctx) return;
+
+        const chart = new Chart(ctx, {
           type: "line",
           data: {
             labels: data.months,
@@ -76,10 +82,7 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
                 position: "top",
                 labels: {
                   color: isDarkMode ? "white" : "#374151",
-                  font: {
-                    size: 14,
-                    weight: "600",
-                  },
+                  font: { size: 14, weight: "600" },
                   padding: 20,
                   usePointStyle: true,
                 },
@@ -95,12 +98,10 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
                   : "rgba(0, 0, 0, 0.1)",
                 borderWidth: 1,
                 callbacks: {
-                  label: function (context) {
+                  label: function (context: any) {
                     let label = context.dataset.label || "";
-                    if (label) {
-                      label += ": ";
-                    }
-                    if (context.parsed.y !== null) {
+                    if (label) label += ": ";
+                    if (context.parsed?.y !== null) {
                       label += new Intl.NumberFormat("pt-BR", {
                         style: "currency",
                         currency: "BRL",
@@ -120,9 +121,7 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
                 },
                 ticks: {
                   color: isDarkMode ? "rgba(255, 255, 255, 0.7)" : "#6b7280",
-                  font: {
-                    size: 12,
-                  },
+                  font: { size: 12 },
                 },
               },
               y: {
@@ -134,33 +133,31 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
                 },
                 ticks: {
                   color: isDarkMode ? "rgba(255, 255, 255, 0.7)" : "#6b7280",
-                  font: {
-                    size: 12,
-                  },
-                  callback: function (value) {
-                    return "R$ " + Number(value).toLocaleString("pt-BR");
-                  },
+                  font: { size: 12 },
+                  callback: (value) =>
+                    "R$ " + Number(value).toLocaleString("pt-BR"),
                 },
               },
             },
-            interaction: {
-              intersect: false,
-              mode: "index",
-            },
-            animations: {
-              tension: {
-                duration: 1000,
-                easing: "linear",
-              },
-            },
+            interaction: { intersect: false, mode: "index" },
+            animations: { tension: { duration: 1000, easing: "linear" } },
           },
         });
+
+        chartInstanceRef.current = chart;
       } catch (error) {
         console.error("Erro ao inicializar gráfico:", error);
       }
     };
 
     initChart();
+
+    return () => {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy();
+        chartInstanceRef.current = null;
+      }
+    };
   }, [data, isDarkMode]);
 
   if (!data.months.length) {
@@ -191,7 +188,7 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
         Evolução Mensal - Receitas vs Despesas
       </h3>
       <div className="h-96">
-        <canvas ref={chartRef} />
+        <canvas ref={canvasRef} />
       </div>
     </div>
   );
