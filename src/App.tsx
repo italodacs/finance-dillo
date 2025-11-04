@@ -13,15 +13,14 @@ import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Dashboard } from "./pages/Dashboard";
 import { FinancialQuestions } from "./pages/FinancialQuestions";
-// ⬇️ Usar o form estilizado
 import { TransactionForm } from "./components/TransactionForm";
 import { Profile } from "./pages/Profile";
 import { supabase } from "./lib/supabase";
 import "./styles.css";
 
-// Se o arquivo MobileOptimizations.css existir, importe. Se não, ignore.
+// ✅ Se o arquivo MobileOptimizations.css existir, importe (ajustado para o caminho dentro de src)
 try {
-  require("./styles/MobileOptimizations.css");
+  require("./MobileOptimizations.css");
 } catch (error) {
   console.log("MobileOptimizations.css não encontrado, usando CSS padrão");
 }
