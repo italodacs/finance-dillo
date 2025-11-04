@@ -1,153 +1,85 @@
 // src/components/ProtectedRoute.tsx
 import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
+import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
+import { supabase } from "../lib/supabase";
 import "./ProtectedRoute.css";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole?: string;
 }
 
-export const ProtectedRoute = ({
-  children,
-  requiredRole,
-}: ProtectedRouteProps) => {
-  const [loading, setLoading] = useState(true);
-  const [authenticated, setAuthenticated] = useState(false);
+export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const navigate = useNavigate();
+  const [authChecked, setAuthChecked] = useState(false);
+  const [allowed, setAllowed] = useState(false);
 
   useEffect(() => {
-    const checkAuthentication = async () => {
-      try {
-        setLoading(true);
+    let isMounted = true;
 
-        // 1. Verificar se há sessão ativa
-        const {
-          data: { session },
-          error: sessionError,
-        } = await supabase.auth.getSession();
+    const check = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-        if (sessionError) {
-          console.error("Erro ao verificar sessão:", sessionError);
-          throw sessionError;
-        }
+      if (!isMounted) return;
 
-        if (!session) {
-          console.log(
-            "❌ Nenhuma sessão encontrada, redirecionando para login..."
-          );
-          navigate("/login", { replace: true });
-          return;
-        }
-
-        // 2. Verificar se o token é válido e obter usuário
-        const {
-          data: { user },
-          error: userError,
-        } = await supabase.auth.getUser();
-
-        if (userError) {
-          console.error("Erro ao obter usuário:", userError);
-          throw userError;
-        }
-
-        if (!user) {
-          console.log("❌ Usuário não encontrado, redirecionando...");
-          await supabase.auth.signOut();
-          navigate("/login", { replace: true });
-          return;
-        }
-
-        // 3. Verificar se o email foi confirmado (opcional)
-        if (!user.email_confirmed_at) {
-          console.warn("⚠️ Email não confirmado, mas permitindo acesso");
-          // Você pode redirecionar para uma página de confirmação se quiser
-        }
-
-        // 4. Verificar role se necessário
-        if (requiredRole) {
-          const userRole = user.role || "authenticated";
-          if (userRole !== requiredRole) {
-            console.log("❌ Permissão insuficiente, redirecionando...");
-            navigate("/unauthorized", { replace: true });
-            return;
-          }
-        }
-
-        console.log("✅ Usuário autenticado com sucesso:", user.email);
-        setAuthenticated(true);
-      } catch (error: any) {
-        console.error("❌ Erro na verificação de autenticação:", error);
-
-        // Limpar sessão corrompida
-        await supabase.auth.signOut();
-
-        // Redirecionar para login com mensagem de erro
-        navigate("/login", {
-          replace: true,
-          state: { error: "Sessão expirada. Faça login novamente." },
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuthentication();
-
-    // 5. Ouvir mudanças de autenticação em tempo real
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Evento de autenticação:", event);
-
-      if (event === "SIGNED_OUT" || event === "USER_DELETED" || !session) {
-        console.log("🔐 Usuário deslogado, redirecionando...");
-        setAuthenticated(false);
+      setAllowed(!!session?.user);
+      setAuthChecked(true);
+      if (!session?.user) {
         navigate("/login", { replace: true });
       }
+    };
 
-      if (event === "TOKEN_REFRESHED") {
-        console.log("🔄 Token renovado com sucesso");
+    check();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(
+      (event: AuthChangeEvent, session: Session | null) => {
+        // Eventos válidos; removido "USER_DELETED"
+        console.log("Evento de autenticação:", event);
+
+        const hasUser = !!session?.user;
+        setAllowed(hasUser);
+        setAuthChecked(true);
+
+        if (!hasUser || event === "SIGNED_OUT") {
+          navigate("/login", { replace: true });
+        }
       }
+    );
 
-      if (event === "SIGNED_IN") {
-        console.log("🔐 Usuário logado, verificando...");
-        // Recarregar a verificação quando o usuário fizer login
-        checkAuthentication();
-      }
-    });
-
-    // Cleanup
     return () => {
+      isMounted = false;
       subscription.unsubscribe();
     };
-  }, [navigate, requiredRole]);
+  }, [navigate]);
 
-  if (loading) {
+  if (!authChecked) {
     return (
       <div className="protected-route-loading">
         <div className="loading-content">
-          <div className="security-spinner"></div>
-          <h3>Verificando segurança...</h3>
-          <p>Estamos confirmando suas credenciais</p>
+          <div className="security-spinner" />
+          <h3>Verificando acesso…</h3>
+          <p>Validando sua sessão com segurança.</p>
         </div>
       </div>
     );
   }
 
-  if (!authenticated) {
+  if (!allowed) {
     return (
       <div className="protected-route-denied">
         <div className="denied-content">
-          <div className="denied-icon">🔒</div>
-          <h3>Acesso Negado</h3>
-          <p>Você não tem permissão para acessar esta página</p>
+          <div className="denied-icon">🚫</div>
+          <h3>Acesso negado</h3>
+          <p>Faça login para continuar.</p>
           <button
-            onClick={() => navigate("/login")}
             className="login-redirect-button"
+            onClick={() => navigate("/login", { replace: true })}
           >
-            Fazer Login
+            Ir para o login
           </button>
         </div>
       </div>

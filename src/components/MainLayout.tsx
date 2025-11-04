@@ -2,7 +2,7 @@
 import { ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
-import logo from "../assets/Dillosemfundo.png";
+import logo from "../assets/dillosemfundo.png"; // <- nome minúsculo, igual ao arquivo
 import "./MainLayout.css";
 
 interface MainLayoutProps {
@@ -27,7 +27,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
     <div className={`main-layout ${isDarkMode ? "dark" : ""}`}>
       <header className={`main-header ${isDarkMode ? "dark" : ""}`}>
         <div className="header-content">
-          {/* Logo e nome */}
+          {/* Logo + nome */}
           <div
             className="header-logo"
             onClick={() => navigate("/dashboard")}
@@ -49,7 +49,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             </span>
           </div>
 
-          {/* Nav */}
+          {/* Navegação */}
           <nav className={`nav-tabs ${isDarkMode ? "dark" : ""}`}>
             {navItems.map((item) => (
               <button
@@ -65,7 +65,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             ))}
           </nav>
 
-          {/* Tema */}
+          {/* Toggle de tema */}
           <button
             onClick={toggleTheme}
             className={`theme-toggle ${isDarkMode ? "dark" : ""}`}
