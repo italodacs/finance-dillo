@@ -84,7 +84,7 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
                   color: isDarkMode ? "white" : "#374151",
                   font: { size: 14, weight: 600 },
                   padding: 20,
-                  usePointStyle: true,
+                  usePointStyle: true, //update main
                 },
               },
               tooltip: {
