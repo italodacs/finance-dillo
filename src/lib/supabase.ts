@@ -1,10 +1,9 @@
 // src/lib/supabase.ts
 import { createClient } from "@supabase/supabase-js";
 
-// Para CodeSandbox, use as URLs diretamente (não use import.meta.env)
-const supabaseUrl = "https://hhmwcomnhelrbctgbegh.supabase.co";
-const supabaseAnonKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhobXdjb21uaGVscmJjdGdiZWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0OTU0OTQsImV4cCI6MjA3NTA3MTQ5NH0.tbRqUBzHMQLvBDdOcZAe70ii5PJ9cYK7rUPnZEqtFe8";
+// 🧩 Agora usando variáveis de ambiente (seguras na Vercel)
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL!;
+const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY!;
 
 // Criar cliente do Supabase
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
@@ -15,7 +14,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-// Função para verificar a conexão (simplificada para CodeSandbox)
+// Teste de conexão opcional (pode remover se quiser)
 export const testSupabaseConnection = async () => {
   try {
     const {
