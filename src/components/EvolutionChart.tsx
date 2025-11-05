@@ -1,6 +1,7 @@
 // src/components/EvolutionChart.tsx
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "../context/ThemeContext";
+import "../components/EvolutionChart.css"; // 🔹 (adicione esse import se ainda não existir)
 
 interface EvolutionChartProps {
   data: {
@@ -16,6 +17,11 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
   const chartInstanceRef = useRef<any | null>(null);
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+  const toggleFullScreen = () => {
+    setIsFullScreen((prev) => !prev);
+  };
 
   useEffect(() => {
     if (!canvasRef.current || !data.months.length) return;
@@ -24,12 +30,10 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
       try {
         const Chart = (await import("chart.js/auto")).default;
 
-        // ✅ destrói gráfico anterior se existir
         if (chartInstanceRef.current) {
           chartInstanceRef.current.destroy();
           chartInstanceRef.current = null;
         } else if (canvasRef.current) {
-          // ✅ forçamos o TS a aceitar o tipo não nulo
           const existing = Chart.getChart(
             canvasRef.current as HTMLCanvasElement
           );
@@ -84,7 +88,7 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
                   color: isDarkMode ? "white" : "#374151",
                   font: { size: 14, weight: 600 },
                   padding: 20,
-                  usePointStyle: true, //update main
+                  usePointStyle: true,
                 },
               },
               tooltip: {
@@ -132,14 +136,14 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
                     : "rgba(0, 0, 0, 0.1)",
                 },
                 ticks: {
-                  stepSize: 500, // 🔹 quebras de R$ 500
+                  stepSize: 500,
                   color: isDarkMode ? "rgba(255, 255, 255, 0.7)" : "#6b7280",
                   font: { size: 12 },
                   callback: (value) =>
                     "R$ " + Number(value).toLocaleString("pt-BR"),
                 },
                 suggestedMax:
-                  Math.max(...data.receitas, ...data.despesas) * 1.2, // 🔹 aumenta altura dinamicamente
+                  Math.max(...data.receitas, ...data.despesas) * 1.2,
               },
             },
             interaction: { intersect: false, mode: "index" },
@@ -182,17 +186,37 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
   }
 
   return (
-    <div className="chart-container">
-      <h3
-        className={`text-xl font-semibold mb-4 ${
-          isDarkMode ? "text-white" : "text-gray-800"
+    <>
+      <div
+        className={`chart-container ${isFullScreen ? "fullscreen" : ""} ${
+          isDarkMode ? "dark" : ""
         }`}
+        onClick={toggleFullScreen}
+        title={
+          isFullScreen
+            ? "Clique para sair da tela cheia"
+            : "Clique para expandir"
+        }
       >
-        Evolução Mensal - Receitas vs Despesas
-      </h3>
-      <div className="h-96">
-        <canvas ref={canvasRef} />
+        <h3
+          className={`text-xl font-semibold mb-4 ${
+            isDarkMode ? "text-white" : "text-gray-800"
+          }`}
+        >
+          Evolução Mensal - Receitas vs Despesas
+        </h3>
+        <div className="h-96">
+          <canvas ref={canvasRef} />
+        </div>
       </div>
-    </div>
+
+      {isFullScreen && (
+        <div
+          className="fullscreen-overlay"
+          onClick={toggleFullScreen}
+          title="Clique para sair da tela cheia"
+        />
+      )}
+    </>
   );
 };

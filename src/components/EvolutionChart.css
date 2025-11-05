@@ -1,0 +1,43 @@
+/* ======== Chart Fullscreen Mode ======== */
+.chart-container {
+    position: relative;
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    cursor: zoom-in;
+    z-index: 1;
+  }
+  
+  .chart-container.fullscreen {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90vw;
+    height: 85vh;
+    z-index: 2000;
+    background: #fff;
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);
+    border-radius: 20px;
+    cursor: zoom-out;
+  }
+  
+  .fullscreen-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1999;
+  }
+  
+  /* Dark mode */
+  .chart-container.dark {
+    background: #1a202c;
+    color: white;
+  }
+  
+  .chart-container.fullscreen.dark {
+    background: #2d3748;
+    box-shadow: 0 0 60px rgba(255, 255, 255, 0.1);
+  }
+  
