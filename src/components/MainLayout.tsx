@@ -2,7 +2,7 @@
 import { ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
-import logo from "../assets/dillosemfundo.png"; // <- nome minúsculo, igual ao arquivo
+import logo from "../assets/dillosemfundo.png";
 import "./MainLayout.css";
 
 interface MainLayoutProps {
@@ -25,13 +25,16 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
 
   return (
     <div className={`main-layout ${isDarkMode ? "dark" : ""}`}>
+      {/* HEADER SUPERIOR */}
       <header className={`main-header ${isDarkMode ? "dark" : ""}`}>
-        <div className="header-content">
-          {/* Logo + nome */}
+        <div className="header-top">
+          {/* Espaçador esquerdo para balancear */}
+          <div className="header-spacer"></div>
+
+          {/* Logo + nome centralizados */}
           <div
-            className="header-logo"
+            className="header-logo-center"
             onClick={() => navigate("/dashboard")}
-            style={{ cursor: "pointer" }}
           >
             <img
               src={logo}
@@ -49,26 +52,12 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             </span>
           </div>
 
-          {/* Navegação */}
-          <nav className={`nav-tabs ${isDarkMode ? "dark" : ""}`}>
-            {navItems.map((item) => (
-              <button
-                key={item.path}
-                onClick={() => navigate(item.path)}
-                className={`nav-tab ${isActive(item.path) ? "active" : ""} ${
-                  isDarkMode ? "dark" : ""
-                }`}
-              >
-                <span className="nav-tab-icon">{item.icon}</span>
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </nav>
-
-          {/* Toggle de tema */}
+          {/* Botão de tema à direita */}
           <button
             onClick={toggleTheme}
-            className={`theme-toggle ${isDarkMode ? "dark" : ""}`}
+            className={`theme-toggle header-theme-btn ${
+              isDarkMode ? "dark" : ""
+            }`}
             aria-label="Alternar tema"
           >
             <div className="toggle-slider">{isDarkMode ? "🌙" : "☀️"}</div>
@@ -76,9 +65,26 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
         </div>
       </header>
 
+      {/* CONTEÚDO PRINCIPAL */}
       <main className="main-content">
         <div className="page-transition">{children}</div>
       </main>
+
+      {/* NAVBAR INFERIOR (somente mobile) */}
+      <nav className={`bottom-nav ${isDarkMode ? "dark" : ""}`}>
+        {navItems.map((item) => (
+          <button
+            key={item.path}
+            onClick={() => navigate(item.path)}
+            className={`bottom-nav-item ${
+              isActive(item.path) ? "active" : ""
+            } ${isDarkMode ? "dark" : ""}`}
+          >
+            <span className="bottom-nav-icon">{item.icon}</span>
+            <span className="bottom-nav-label">{item.label}</span>
+          </button>
+        ))}
+      </nav>
     </div>
   );
 };

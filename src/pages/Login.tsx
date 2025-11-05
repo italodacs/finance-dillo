@@ -50,9 +50,19 @@ export const Login = () => {
 
       <div className="auth-card">
         <div className="auth-header">
+          {/* LOGO centralizada */}
           <div className="auth-logo">
-            <span className="auth-logo-icon">💰</span>
+            <img
+              src="/dillofinancenome.png"
+              alt="DilloFinance"
+              className="auth-logo-img"
+              width={120}
+              height={120}
+              loading="eager"
+              decoding="async"
+            />
           </div>
+
           <h1 className="auth-title">Bem-vindo de volta</h1>
           <p className="auth-subtitle">Entre na sua conta para continuar</p>
         </div>
