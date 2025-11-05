@@ -116,7 +116,7 @@
   background: #4a5568;
 }
 
-/* Ícone interno (sol/lua) */
+/* Ícone interno (sol/lua) — alinhado com a logo */
 .toggle-slider {
   width: 26px;
   height: 26px;
@@ -127,15 +127,15 @@
   align-items: center;
   justify-content: center;
   font-size: 14px;
+  transform: translateY(-1px); /* 🔹 sobe levemente o “solzinho” */
   transition: transform 0.3s ease;
 }
 
 /* Estado escuro: move o círculo para a direita */
 .theme-toggle.dark .toggle-slider {
-  transform: translateX(20px);
+  transform: translate(20px, -1px); /* 🔹 move à direita e mantém a altura */
   background: #1a202c;
 }
-
 /* ======= CONTEÚDO PRINCIPAL ======= */
 .main-content {
   flex: 1;
