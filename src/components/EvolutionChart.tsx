@@ -132,11 +132,14 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
                     : "rgba(0, 0, 0, 0.1)",
                 },
                 ticks: {
+                  stepSize: 500, // 🔹 quebras de R$ 500
                   color: isDarkMode ? "rgba(255, 255, 255, 0.7)" : "#6b7280",
                   font: { size: 12 },
                   callback: (value) =>
                     "R$ " + Number(value).toLocaleString("pt-BR"),
                 },
+                suggestedMax:
+                  Math.max(...data.receitas, ...data.despesas) * 1.2, // 🔹 aumenta altura dinamicamente
               },
             },
             interaction: { intersect: false, mode: "index" },
