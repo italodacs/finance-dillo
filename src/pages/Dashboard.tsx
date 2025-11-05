@@ -65,13 +65,12 @@ export const Dashboard = () => {
     loadData();
   }, []);
 
-  // === prepareChartData (versão ajustada) ===
+  // === Função que prepara dados para o gráfico e resumo ===
   const prepareChartData = (txs: Transaction[]) => {
     if (!txs || txs.length === 0) {
       return { months: [], saldo: [], receitas: [], despesas: [] };
     }
 
-    // Janela: últimos 6 e próximos 6 meses
     const monthsArray: string[] = [];
     const monthlyData: Record<string, { receitas: number; despesas: number }> =
       {};
@@ -97,13 +96,12 @@ export const Dashboard = () => {
       const baseM = baseDate.getMonth() + 1;
       const amount = parseFloat(String(t.amount)) || 0;
 
-      // 1) RECORRENTES: projetar do mês base em diante
+      // 1) Recorrentes: projetar do mês base em diante
       if (t.is_recorrente) {
-        // 0 ou null -> “indefinido”: projetar até o fim da janela
         const totalMeses =
           t.recorrencia_meses && t.recorrencia_meses > 0
             ? t.recorrencia_meses
-            : 1000; // grande; será cortado pela janela
+            : 1000;
 
         for (let i = 0; i < totalMeses; i++) {
           const d = new Date(baseY, baseM - 1 + i, 1);
@@ -116,10 +114,10 @@ export const Dashboard = () => {
           if (t.type === "income") monthlyData[mk].receitas += amount;
           else monthlyData[mk].despesas += amount;
         }
-        return; // já tratou base + futuras
+        return;
       }
 
-      // 2) PARCELADAS: distribuir o valor nas N parcelas (inclui mês base)
+      // 2) Parceladas: distribuir valor nas N parcelas
       if (t.is_parcelada && t.total_parcelas && t.total_parcelas > 0) {
         const parcela = amount / t.total_parcelas;
 
@@ -137,7 +135,7 @@ export const Dashboard = () => {
         return;
       }
 
-      // 3) AVULSA: somente mês base
+      // 3) Avulsas
       const baseKey = `${baseY}-${String(baseM).padStart(2, "0")}`;
       if (monthlyData[baseKey]) {
         if (t.type === "income") monthlyData[baseKey].receitas += amount;
@@ -163,37 +161,31 @@ export const Dashboard = () => {
     return { months, saldo, receitas, despesas };
   };
 
+  // Dados do gráfico e dos cards
   const chartData = useMemo(
     () => prepareChartData(transactions),
     [transactions]
   );
 
-  // Totais do mês atual
+  // ✅ Totais do mês atual baseados no mesmo cálculo do gráfico
   const { receitaMes, despesaMes } = useMemo(() => {
     const now = new Date();
-    const ym = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}`;
-
-    let receitaMes = 0;
-    let despesaMes = 0;
-
-    transactions.forEach((t) => {
-      const d = new Date(t.date);
-      const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
-        2,
-        "0"
-      )}`;
-      if (k === ym) {
-        const val = parseFloat(String(t.amount)) || 0;
-        if (t.type === "income") receitaMes += val;
-        else despesaMes += val;
-      }
+    const mesAtualFormatado = now.toLocaleDateString("pt-BR", {
+      month: "short",
+      year: "numeric",
     });
 
-    return { receitaMes, despesaMes };
-  }, [transactions]);
+    const idx = chartData.months.findIndex((m) => m === mesAtualFormatado);
+
+    if (idx === -1) {
+      return { receitaMes: 0, despesaMes: 0 };
+    }
+
+    return {
+      receitaMes: chartData.receitas[idx],
+      despesaMes: chartData.despesas[idx],
+    };
+  }, [chartData]);
 
   const formatCurrency = (n: number) =>
     new Intl.NumberFormat("pt-BR", {
@@ -263,7 +255,7 @@ export const Dashboard = () => {
         <EvolutionChart data={chartData} />
       </div>
 
-      {/* Lista (recente) */}
+      {/* Lista de transações */}
       <div className={`all-transactions ${isDarkMode ? "dark" : ""}`}>
         <div className="transactions-header">
           <h3 className="transactions-title">Transações recentes</h3>
