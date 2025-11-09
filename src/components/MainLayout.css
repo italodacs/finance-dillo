@@ -1,5 +1,5 @@
 /* ===========================================
-   MAIN LAYOUT - FinanceDillo
+   MAIN LAYOUT - FinanceDillo (Tema Claro)
    =========================================== */
 
 /* Layout Principal */
@@ -8,10 +8,6 @@
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   display: flex;
   flex-direction: column;
-}
-
-.main-layout.dark {
-  background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
 }
 
 /* ======= HEADER SUPERIOR ======= */
@@ -25,31 +21,18 @@
   z-index: 900;
 }
 
-.main-header.dark {
-  background: rgba(26, 32, 44, 0.95);
-  border-bottom-color: rgba(255, 255, 255, 0.1);
-}
-
 /* ======= HEADER ALINHADO ======= */
 .header-top {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   height: 70px;
   padding: 0 1.5rem;
   position: relative;
 }
 
-/* Espaçador invisível — equilibra o logo no centro */
-.header-spacer {
-  width: 52px; /* mesmo tamanho do botão de tema */
-}
-
 /* Centraliza logo e nome */
 .header-logo-center {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -58,7 +41,7 @@
 }
 
 .header-logo-center:hover {
-  transform: translateX(-50%) translateY(-1px);
+  transform: translateY(-1px);
 }
 
 /* Logo PNG */
@@ -80,63 +63,6 @@
   background-clip: text;
 }
 
-.logo-text.dark {
-  background: linear-gradient(135deg, #a78bfa, #818cf8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Botão de tema fixo à direita e alinhado à logo */
-.header-theme-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 36px;
-  width: 52px;
-  border-radius: 18px;
-  z-index: 10;
-}
-
-/* ======= BOTÃO DE TEMA ======= */
-.theme-toggle {
-  width: 52px;
-  height: 32px;
-  background: #e2e8f0;
-  border: none;
-  border-radius: 16px;
-  padding: 3px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  display: flex;
-  align-items: flex-start; /* 🔹 move a bolinha mais para cima */
-  justify-content: flex-start;
-}
-
-.theme-toggle.dark {
-  background: #4a5568;
-}
-
-/* Ícone interno (sol/lua) — alinhado com a logo */
-.toggle-slider {
-  width: 26px;
-  height: 26px;
-  background: white;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  transform: translateY(1px); /* 🔹 corrige microdiferença de alinhamento */
-  transition: transform 0.3s ease;
-}
-
-/* Estado escuro: move o círculo para a direita */
-.theme-toggle.dark .toggle-slider {
-  transform: translate(20px, 1px); /* 🔹 move horizontal + mantém altura */
-  background: #1a202c;
-}
 /* ======= CONTEÚDO PRINCIPAL ======= */
 .main-content {
   flex: 1;
@@ -179,11 +105,6 @@
   z-index: 1000;
 }
 
-.bottom-nav.dark {
-  background: rgba(26, 32, 44, 0.9);
-  border-top-color: rgba(255, 255, 255, 0.1);
-}
-
 .bottom-nav-item {
   background: transparent;
   border: none;
@@ -195,10 +116,6 @@
   font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.2s ease;
-}
-
-.bottom-nav-item.dark {
-  color: #a0aec0;
 }
 
 .bottom-nav-item.active {

@@ -1,7 +1,6 @@
 // src/components/EvolutionChart.tsx
-import { useEffect, useRef, useState } from "react";
-import { useTheme } from "../context/ThemeContext";
-import "../components/EvolutionChart.css"; // 🔹 (adicione esse import se ainda não existir)
+import { useEffect, useRef } from "react";
+import "../components/EvolutionChart.css";
 
 interface EvolutionChartProps {
   data: {
@@ -15,13 +14,6 @@ interface EvolutionChartProps {
 export const EvolutionChart = ({ data }: EvolutionChartProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const chartInstanceRef = useRef<any | null>(null);
-  const { theme } = useTheme();
-  const isDarkMode = theme === "dark";
-  const [isFullScreen, setIsFullScreen] = useState(false);
-
-  const toggleFullScreen = () => {
-    setIsFullScreen((prev) => !prev);
-  };
 
   useEffect(() => {
     if (!canvasRef.current || !data.months.length) return;
@@ -30,14 +22,10 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
       try {
         const Chart = (await import("chart.js/auto")).default;
 
+        // Destroi gráfico existente se houver
         if (chartInstanceRef.current) {
           chartInstanceRef.current.destroy();
           chartInstanceRef.current = null;
-        } else if (canvasRef.current) {
-          const existing = Chart.getChart(
-            canvasRef.current as HTMLCanvasElement
-          );
-          if (existing) existing.destroy();
         }
 
         const ctx = canvasRef.current?.getContext("2d");
@@ -85,21 +73,17 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
               legend: {
                 position: "top",
                 labels: {
-                  color: isDarkMode ? "white" : "#374151",
+                  color: "#374151",
                   font: { size: 14, weight: 600 },
                   padding: 20,
                   usePointStyle: true,
                 },
               },
               tooltip: {
-                backgroundColor: isDarkMode
-                  ? "rgba(0, 0, 0, 0.8)"
-                  : "rgba(255, 255, 255, 0.9)",
-                titleColor: isDarkMode ? "white" : "#374151",
-                bodyColor: isDarkMode ? "white" : "#374151",
-                borderColor: isDarkMode
-                  ? "rgba(255, 255, 255, 0.1)"
-                  : "rgba(0, 0, 0, 0.1)",
+                backgroundColor: "rgba(255, 255, 255, 0.9)",
+                titleColor: "#374151",
+                bodyColor: "#374151",
+                borderColor: "rgba(0, 0, 0, 0.1)",
                 borderWidth: 1,
                 callbacks: {
                   label: function (context: any) {
@@ -119,25 +103,21 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
             scales: {
               x: {
                 grid: {
-                  color: isDarkMode
-                    ? "rgba(255, 255, 255, 0.1)"
-                    : "rgba(0, 0, 0, 0.1)",
+                  color: "rgba(0, 0, 0, 0.1)",
                 },
                 ticks: {
-                  color: isDarkMode ? "rgba(255, 255, 255, 0.7)" : "#6b7280",
+                  color: "#6b7280",
                   font: { size: 12 },
                 },
               },
               y: {
                 beginAtZero: true,
                 grid: {
-                  color: isDarkMode
-                    ? "rgba(255, 255, 255, 0.1)"
-                    : "rgba(0, 0, 0, 0.1)",
+                  color: "rgba(0, 0, 0, 0.1)",
                 },
                 ticks: {
                   stepSize: 500,
-                  color: isDarkMode ? "rgba(255, 255, 255, 0.7)" : "#6b7280",
+                  color: "#6b7280",
                   font: { size: 12 },
                   callback: (value) =>
                     "R$ " + Number(value).toLocaleString("pt-BR"),
@@ -165,20 +145,12 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
         chartInstanceRef.current = null;
       }
     };
-  }, [data, isDarkMode]);
+  }, [data]);
 
   if (!data.months.length) {
     return (
-      <div
-        className={`rounded-lg p-6 ${
-          isDarkMode ? "bg-gray-800" : "bg-white"
-        } h-64 flex items-center justify-center`}
-      >
-        <p
-          className={`text-center ${
-            isDarkMode ? "text-gray-400" : "text-gray-500"
-          }`}
-        >
+      <div className="rounded-lg p-6 bg-white h-64 flex items-center justify-center">
+        <p className="text-center text-gray-500">
           Não há dados suficientes para exibir o gráfico
         </p>
       </div>
@@ -186,37 +158,13 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
   }
 
   return (
-    <>
-      <div
-        className={`chart-container ${isFullScreen ? "fullscreen" : ""} ${
-          isDarkMode ? "dark" : ""
-        }`}
-        onClick={toggleFullScreen}
-        title={
-          isFullScreen
-            ? "Clique para sair da tela cheia"
-            : "Clique para expandir"
-        }
-      >
-        <h3
-          className={`text-xl font-semibold mb-4 ${
-            isDarkMode ? "text-white" : "text-gray-800"
-          }`}
-        >
-          Evolução Mensal - Receitas vs Despesas
-        </h3>
-        <div className="h-96">
-          <canvas ref={canvasRef} />
-        </div>
+    <div className="chart-container bg-white rounded-lg p-6 shadow-md">
+      <h3 className="text-xl font-semibold mb-4 text-gray-800">
+        Evolução Mensal - Receitas vs Despesas
+      </h3>
+      <div className="h-96">
+        <canvas ref={canvasRef} />
       </div>
-
-      {isFullScreen && (
-        <div
-          className="fullscreen-overlay"
-          onClick={toggleFullScreen}
-          title="Clique para sair da tela cheia"
-        />
-      )}
-    </>
+    </div>
   );
 };
