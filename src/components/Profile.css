@@ -37,7 +37,7 @@
   margin-bottom: 2rem;
 }
 
-/* Avatar liso com degradê marrom */
+/* Avatar */
 .avatar-3d {
   width: 90px;
   height: 90px;
@@ -50,7 +50,7 @@
   align-items: center;
   justify-content: center;
   border: none;
-  box-shadow: none; /* Sem efeito 3D */
+  box-shadow: none;
   transition: all 0.2s ease;
 }
 
@@ -58,7 +58,7 @@
   transform: scale(1.05);
 }
 
-/* Info do header */
+/* Header info */
 .profile-header-info {
   flex: 1;
 }
@@ -125,7 +125,7 @@
   color: #15803d;
 }
 
-/* Seções de informações */
+/* ======= SEÇÃO DE INFORMAÇÕES ======= */
 .info-section {
   background: #f9fafb;
   border-radius: 16px;
@@ -134,12 +134,28 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
+.info-section h3 {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #5a4630;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+/* Blocos de informações */
 .info-item {
   margin-bottom: 1.25rem;
 }
 
-.info-item:last-child {
-  margin-bottom: 0;
+.info-item label {
+  font-weight: 600;
+  color: #374151;
+  display: block;
+  margin-bottom: 0.5rem;
 }
 
 .info-value {
@@ -150,6 +166,7 @@
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   padding: 0.75rem 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
 }
 
 .info-value button {
@@ -161,7 +178,6 @@
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: none;
 }
 
 .info-value button:hover {
@@ -186,7 +202,6 @@
   outline: none;
 }
 
-/* Ações de edição */
 .edit-actions {
   display: flex;
   gap: 0.5rem;
@@ -212,38 +227,6 @@
   color: #374151;
 }
 
-/* Ações rápidas */
-.actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.primary-action,
-.secondary-action {
-  flex: 1;
-  padding: 1rem;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s ease;
-}
-
-.primary-action {
-  background: linear-gradient(135deg, #8a7354, #5a5a5a);
-  color: white;
-}
-
-.secondary-action {
-  background: #f3f4f6;
-  color: #374151;
-}
-
-.secondary-action:hover {
-  background: #e5e7eb;
-}
-
 /* Botão de logout */
 .logout-button {
   margin-top: 2rem;
@@ -262,22 +245,39 @@
   background: #dc2626;
 }
 
-/* Lista de transações */
+/* ======= GRUPOS DE TRANSAÇÃO ======= */
 .transactions-section {
   margin-top: 1.5rem;
 }
 
+.transaction-group {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: #f9fafb;
+}
+
+.transaction-group h4 {
+  color: #5a4630;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.4rem;
+}
+
+/* ======= LINHAS DE TRANSAÇÃO ======= */
 .transaction-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #f9fafb;
+  background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
   padding: 1rem 1.25rem;
   margin-bottom: 1rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
+  gap: 1rem;
 }
 
 .transaction-row:hover {
@@ -285,12 +285,32 @@
   transform: translateY(-2px);
 }
 
-.transaction-row .amount {
-  font-weight: 700;
-  color: #1e293b;
+.transaction-info {
+  flex: 1;
 }
 
-/* Botão de exclusão */
+.transaction-info p {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.transaction-amount {
+  font-weight: 700;
+  text-align: right;
+  min-width: 120px;
+  font-size: 1rem;
+}
+
+.transaction-amount.positive {
+  color: #15803d;
+}
+
+.transaction-amount.negative {
+  color: #b91c1c;
+}
+
+/* Botão Excluir */
 .delete-button {
   background: #ef4444;
   border: none;
@@ -300,6 +320,7 @@
   cursor: pointer;
   font-weight: 600;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .delete-button:hover {
@@ -307,7 +328,20 @@
   transform: translateY(-2px);
 }
 
-/* Responsividade */
+/* Selo de categoria */
+.category-badge {
+  display: inline-block;
+  background: #8a7354;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  margin-top: 6px;
+  text-transform: capitalize;
+}
+
+/* ======= RESPONSIVIDADE ======= */
 @media (max-width: 768px) {
   .profile-card {
     padding: 2rem 1.5rem;
@@ -318,23 +352,17 @@
     text-align: center;
   }
 
-  .actions {
+  .transaction-row {
     flex-direction: column;
+    align-items: flex-start;
   }
 
-  .tab-button {
-    flex: 1;
+  .transaction-amount {
+    text-align: left;
+    margin-top: 0.5rem;
   }
-}
 
-.info-section h3 {
-  text-align: center;
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #5a4630; /* marrom elegante */
-  margin-bottom: 1.5rem;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  border-bottom: 2px solid #e5e7eb;
-  padding-bottom: 0.5rem;
+  .delete-button {
+    align-self: flex-end;
+  }
 }
