@@ -1,11 +1,9 @@
-// src/components/TransactionForm.tsx
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "../context/ThemeContext";
 import "./TransactionForm.css";
 
-// ===== Bancos (pode editar à vontade) =====
+// ===== Bancos =====
 const BANCOS = [
   "Nubank",
   "Itaú",
@@ -20,13 +18,12 @@ const BANCOS = [
   "Outros",
 ];
 
-// ===== Categorias separadas por tipo =====
+// ===== Categorias =====
 const CATEGORIAS_DESPESA = [
   "Alimentação",
   "Supermercado",
   "Restaurante / Lanches",
   "Transporte",
-  "Transporte (Uber & 99)",
   "Combustível",
   "Moradia",
   "Aluguel",
@@ -58,10 +55,7 @@ export const TransactionForm = () => {
   const [tipo, setTipo] = useState<"income" | "expense">("expense");
   const [descricao, setDescricao] = useState("");
   const [data, setData] = useState("");
-
-  // começa com "Outros" (existe nas duas listas)
   const [categoria, setCategoria] = useState("Outros");
-
   const [tipoTransacao, setTipoTransacao] = useState<TipoTransacao>("avulsa");
   const [isCredito, setIsCredito] = useState(false);
   const [banco, setBanco] = useState("");
@@ -72,8 +66,6 @@ export const TransactionForm = () => {
   const [success, setSuccess] = useState("");
 
   const navigate = useNavigate();
-  const { theme } = useTheme();
-  const isDarkMode = theme === "dark";
 
   // Data atual
   useEffect(() => {
@@ -81,7 +73,7 @@ export const TransactionForm = () => {
     setData(now.toISOString().split("T")[0]);
   }, []);
 
-  // Ao mudar o tipo (income/expense), zera crédito e ajusta categoria se necessário
+  // Ajusta categorias e crédito
   useEffect(() => {
     if (tipo === "income") {
       setIsCredito(false);
@@ -94,7 +86,7 @@ export const TransactionForm = () => {
     if (!listaAtual.includes(categoria)) {
       setCategoria("Outros");
     }
-  }, [tipo]); // intencional: roda quando o tipo muda
+  }, [tipo]);
 
   const handleValorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "");
@@ -145,21 +137,18 @@ export const TransactionForm = () => {
     try {
       const {
         data: { user },
-        error: userError,
       } = await supabase.auth.getUser();
 
-      if (userError || !user) {
+      if (!user) {
         navigate("/login");
         return;
       }
 
       // Converter valor
-      let valorNumerico;
-      try {
-        const valorLimpo = valor.replace(/[^\d,]/g, "").replace(",", ".");
-        valorNumerico = parseFloat(valorLimpo);
-        if (isNaN(valorNumerico)) throw new Error("Valor inválido");
-      } catch {
+      const valorLimpo = valor.replace(/[^\d,]/g, "").replace(",", ".");
+      const valorNumerico = parseFloat(valorLimpo);
+
+      if (isNaN(valorNumerico)) {
         setError("Valor inválido. Use números e vírgula para centavos");
         setLoading(false);
         return;
@@ -170,7 +159,7 @@ export const TransactionForm = () => {
         user_id: user.id,
         amount: valorNumerico,
         type: tipo,
-        description: descricao || null, // descrição opcional
+        description: descricao || null,
         date: data,
         category: categoria,
         is_credit: tipo === "expense" ? isCredito : false,
@@ -178,7 +167,6 @@ export const TransactionForm = () => {
         is_parcelada: tipoTransacao === "parcelada",
         is_recorrente: tipoTransacao === "recorrente",
         total_parcelas: tipoTransacao === "parcelada" ? totalParcelas : null,
-        parcela_atual: tipoTransacao === "parcelada" ? 1 : null,
         recorrencia_meses:
           tipoTransacao === "recorrente" ? recorrenciaMeses : null,
       };
@@ -212,265 +200,158 @@ export const TransactionForm = () => {
     }
   };
 
-  // Lista atual para o select de categoria
   const categoriasAtuais =
     tipo === "income" ? CATEGORIAS_RECEITA : CATEGORIAS_DESPESA;
 
   return (
-    <div className={`transaction-form-container ${isDarkMode ? "dark" : ""}`}>
-      {/* Header */}
-      <div className="transaction-form-header">
-        <h1 className="transaction-form-title">Registrar Transação</h1>
-        <p className="transaction-form-subtitle">
-          {tipo === "income"
-            ? "Adicione suas receitas"
-            : "Adicione suas despesas"}
+    <div className="transaction-page">
+      <div className="transaction-card">
+        <h1 className="transaction-title">Registrar Transação</h1>
+        <p className="transaction-subtitle">
+          {tipo === "income" ? "Adicione suas receitas" : "Adicione suas despesas"}
         </p>
-      </div>
 
-      {/* Form Section */}
-      <div className="transaction-form">
-        <h2 className="form-section-title">
-          {tipo === "income" ? "Nova Receita" : "Nova Despesa"}
-        </h2>
+        {error && <div className="message error">⚠️ {error}</div>}
+        {success && <div className="message success">✅ {success}</div>}
 
         <form onSubmit={handleSubmit}>
           {/* Valor */}
           <div className="form-group">
-            <label className="form-label required">
-              Valor {tipoTransacao === "parcelada" && "Integral"} *
-            </label>
+            <label>Valor *</label>
             <div className="currency-input">
-              <span className="currency-prefix">R$</span>
+              <span>R$</span>
               <input
                 type="text"
                 value={valor}
                 onChange={handleValorChange}
                 placeholder="0,00"
-                className="form-input currency-input-field"
                 required
               />
             </div>
-            {tipoTransacao === "parcelada" && (
-              <p className="info-text parcela-info">
-                💡 Valor total será dividido em {totalParcelas} parcelas de{" "}
-                {formatCurrency(calcularValorParcela())}
-              </p>
-            )}
           </div>
 
-          {/* Tipo (Receita/Despesa) */}
+          {/* Tipo */}
           <div className="form-group">
-            <label className="form-label required">Tipo *</label>
+            <label>Tipo *</label>
             <div className="radio-group">
-              <div className="radio-option">
+              <label className={`radio-option ${tipo === "income" ? "active" : ""}`}>
                 <input
                   type="radio"
-                  id="income"
-                  name="type"
+                  name="tipo"
                   value="income"
                   checked={tipo === "income"}
-                  onChange={(e) =>
-                    setTipo(e.target.value as "income" | "expense")
-                  }
-                  className="radio-input"
+                  onChange={() => setTipo("income")}
                 />
-                <label
-                  htmlFor="income"
-                  className={`radio-label income-option ${
-                    tipo === "income" ? "checked" : ""
-                  }`}
-                >
-                  <span className="icon">💰</span>
-                  <span>Receita</span>
-                </label>
-              </div>
-              <div className="radio-option">
+                💰 Receita
+              </label>
+              <label className={`radio-option ${tipo === "expense" ? "active" : ""}`}>
                 <input
                   type="radio"
-                  id="expense"
-                  name="type"
+                  name="tipo"
                   value="expense"
                   checked={tipo === "expense"}
-                  onChange={(e) =>
-                    setTipo(e.target.value as "income" | "expense")
-                  }
-                  className="radio-input"
+                  onChange={() => setTipo("expense")}
                 />
-                <label
-                  htmlFor="expense"
-                  className={`radio-label expense-option ${
-                    tipo === "expense" ? "checked" : ""
-                  }`}
-                >
-                  <span className="icon">💸</span>
-                  <span>Despesa</span>
-                </label>
-              </div>
+                💸 Despesa
+              </label>
             </div>
           </div>
 
-          {/* Categoria (dinâmica) */}
+          {/* Categoria */}
           <div className="form-group">
-            <label className="form-label">Categoria</label>
-            <select
-              value={categoria}
-              onChange={(e) => setCategoria(e.target.value)}
-              className="form-select"
-            >
-              {categoriasAtuais.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
+            <label>Categoria</label>
+            <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
+              {categoriasAtuais.map((c) => (
+                <option key={c}>{c}</option>
               ))}
             </select>
           </div>
 
           {/* Tipo de Transação */}
           <div className="form-group">
-            <label className="form-label required">Tipo de Transação *</label>
+            <label>Tipo de Transação *</label>
             <div className="radio-group">
-              <div className="radio-option">
-                <input
-                  type="radio"
-                  id="avulsa"
-                  name="tipoTransacao"
-                  value="avulsa"
-                  checked={tipoTransacao === "avulsa"}
-                  onChange={(e) =>
-                    setTipoTransacao(e.target.value as TipoTransacao)
-                  }
-                  className="radio-input"
-                />
+              {["avulsa", "parcelada", "recorrente"].map((t) => (
                 <label
-                  htmlFor="avulsa"
-                  className={`radio-label transaction-type-avulsa ${
-                    tipoTransacao === "avulsa" ? "checked" : ""
-                  }`}
+                  key={t}
+                  className={`radio-option ${tipoTransacao === t ? "active" : ""}`}
                 >
-                  <span className="icon">⚡</span>
-                  <span>Avulsa</span>
+                  <input
+                    type="radio"
+                    name="tipoTransacao"
+                    value={t}
+                    checked={tipoTransacao === t}
+                    onChange={() => setTipoTransacao(t as TipoTransacao)}
+                  />
+                  {t === "avulsa" && "⚡ Avulsa"}
+                  {t === "parcelada" && "📦 Parcelada"}
+                  {t === "recorrente" && "🔄 Recorrente"}
                 </label>
-              </div>
-              <div className="radio-option">
-                <input
-                  type="radio"
-                  id="parcelada"
-                  name="tipoTransacao"
-                  value="parcelada"
-                  checked={tipoTransacao === "parcelada"}
-                  onChange={(e) =>
-                    setTipoTransacao(e.target.value as TipoTransacao)
-                  }
-                  className="radio-input"
-                />
-                <label
-                  htmlFor="parcelada"
-                  className={`radio-label transaction-type-parcelada ${
-                    tipoTransacao === "parcelada" ? "checked" : ""
-                  }`}
-                >
-                  <span className="icon">📦</span>
-                  <span>Parcelada</span>
-                </label>
-              </div>
-              <div className="radio-option">
-                <input
-                  type="radio"
-                  id="recorrente"
-                  name="tipoTransacao"
-                  value="recorrente"
-                  checked={tipoTransacao === "recorrente"}
-                  onChange={(e) =>
-                    setTipoTransacao(e.target.value as TipoTransacao)
-                  }
-                  className="radio-input"
-                />
-                <label
-                  htmlFor="recorrente"
-                  className={`radio-label transaction-type-recorrente ${
-                    tipoTransacao === "recorrente" ? "checked" : ""
-                  }`}
-                >
-                  <span className="icon">🔄</span>
-                  <span>Recorrente</span>
-                </label>
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Específico Parcelada */}
+          {/* Parcelada */}
           {tipoTransacao === "parcelada" && (
-            <div className="special-section parcelada-section">
-              <label className="form-label">Número de Parcelas</label>
+            <div className="form-group">
+              <label>Número de Parcelas</label>
               <select
                 value={totalParcelas}
                 onChange={(e) => setTotalParcelas(Number(e.target.value))}
-                className="form-select"
               >
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => (
-                  <option key={num} value={num}>
-                    {num} {num === 1 ? "parcela" : "parcelas"}
+                {[...Array(12)].map((_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {i + 1} parcelas
                   </option>
                 ))}
               </select>
-              <p className="info-text parcela-info">
+              <p className="info-text">
                 Valor por parcela: {formatCurrency(calcularValorParcela())}
               </p>
             </div>
           )}
 
-          {/* Específico Recorrente */}
+          {/* Recorrente */}
           {tipoTransacao === "recorrente" && (
-            <div className="special-section recorrente-section">
-              <label className="form-label">Duração da Recorrência</label>
+            <div className="form-group">
+              <label>Duração (meses)</label>
               <select
                 value={recorrenciaMeses}
                 onChange={(e) => setRecorrenciaMeses(Number(e.target.value))}
-                className="form-select"
               >
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => (
-                  <option key={num} value={num}>
-                    {num} {num === 1 ? "mês" : "meses"}
+                {[...Array(12)].map((_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {i + 1} meses
                   </option>
                 ))}
               </select>
-              <p className="info-text recorrente-info">
-                💡 Serão criadas {recorrenciaMeses} transações mensais
-              </p>
             </div>
           )}
 
-          {/* Crédito - só para Despesa */}
+          {/* Crédito */}
           {tipo === "expense" && (
             <>
-              <div className="form-group">
-                <label className="checkbox-label">
+              <div className="form-group checkbox-group">
+                <label>
                   <input
                     type="checkbox"
-                    id="isCredito"
                     checked={isCredito}
                     onChange={(e) => setIsCredito(e.target.checked)}
-                    className="checkbox-input"
-                  />
-                  <span>Esta compra foi no crédito?</span>
+                  />{" "}
+                  Compra no crédito?
                 </label>
               </div>
-
               {isCredito && (
                 <div className="form-group">
-                  <label className="form-label required">Banco *</label>
+                  <label>Banco *</label>
                   <select
                     value={banco}
                     onChange={(e) => setBanco(e.target.value)}
-                    className="form-select"
                     required
                   >
-                    <option value="">Selecione o banco</option>
+                    <option value="">Selecione</option>
                     {BANCOS.map((b) => (
-                      <option key={b} value={b}>
-                        {b}
-                      </option>
+                      <option key={b}>{b}</option>
                     ))}
                   </select>
                 </div>
@@ -478,64 +359,40 @@ export const TransactionForm = () => {
             </>
           )}
 
-          {/* Descrição (opcional) */}
+          {/* Descrição */}
           <div className="form-group">
-            <label className="form-label">Descrição</label>
+            <label>Descrição</label>
             <input
               type="text"
               value={descricao}
               onChange={(e) => setDescricao(e.target.value)}
-              placeholder={
-                tipo === "income"
-                  ? "Ex: Salário, Freelance, Rendimentos..."
-                  : "Ex: Mercado, Combustível, Aluguel..."
-              }
-              className="form-input"
+              placeholder="Ex: Mercado, Aluguel..."
             />
           </div>
 
           {/* Data */}
           <div className="form-group">
-            <label className="form-label required">
-              Data {tipoTransacao === "recorrente" ? "Inicial" : ""} *
-            </label>
+            <label>Data *</label>
             <input
               type="date"
               value={data}
               onChange={(e) => setData(e.target.value)}
-              className="form-input"
               required
             />
           </div>
 
-          {/* Mensagens */}
-          {success && <div className="success-message">✅ {success}</div>}
-          {error && <div className="error-message">⚠️ {error}</div>}
-
-          {/* Botão */}
-          <button
-            type="submit"
-            disabled={loading}
-            className={`submit-button ${
-              tipo === "income" ? "income-button" : "expense-button"
-            } ${loading ? "loading" : ""}`}
-          >
-            {loading
-              ? "Salvando..."
-              : tipoTransacao === "recorrente"
-              ? `Criar ${recorrenciaMeses} Transações Recorrentes`
-              : tipoTransacao === "parcelada"
-              ? "Criar Transação Parcelada"
-              : "Registrar Transação"}
+          <button type="submit" className="submit-button" disabled={loading}>
+            {loading ? "Salvando..." : "Registrar Transação"}
           </button>
-        </form>
 
-        {/* Navegação */}
-        <div className="form-navigation">
-          <button onClick={() => navigate("/dashboard")} className="nav-button">
+          <button
+            type="button"
+            className="back-button"
+            onClick={() => navigate("/dashboard")}
+          >
             Voltar ao Dashboard
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );

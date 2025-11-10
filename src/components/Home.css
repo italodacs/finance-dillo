@@ -1,0 +1,121 @@
+/* ===========================================
+   HOME PAGE - Tema Claro + 3D
+   =========================================== */
+
+.home-page {
+  min-height: 100vh;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.home-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.15),
+    0 4px 8px rgba(0, 0, 0, 0.08);
+  padding: 3rem 2.5rem;
+  text-align: center;
+  max-width: 700px;
+  width: 100%;
+  animation: fadeInUp 0.4s ease-out;
+  transition: all 0.3s ease;
+}
+
+.home-card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 16px 28px rgba(0, 0, 0, 0.25),
+    0 6px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* Ícone */
+.home-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #8a7354, #5a5a5a);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0 auto 1.5rem;
+  box-shadow:
+    0 6px 0 #4a4a4a,
+    0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Título e texto */
+.home-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #3a3a3a;
+  margin-bottom: 1rem;
+}
+
+.home-text {
+  color: #6b7280;
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* Botão */
+.home-button {
+  background: linear-gradient(135deg, #8a7354, #5a5a5a);
+  color: white;
+  padding: 1rem 2.5rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow:
+    0 6px 0 #4a4a4a,
+    0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease;
+}
+
+.home-button:hover {
+  transform: translateY(-2px);
+}
+
+.home-button:active {
+  transform: translateY(3px);
+  box-shadow:
+    0 3px 0 #3a3a3a,
+    0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Animação */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .home-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .home-title {
+    font-size: 1.5rem;
+  }
+
+  .home-text {
+    font-size: 1rem;
+  }
+}

@@ -1,8 +1,6 @@
-// src/pages/Profile.tsx
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "../context/ThemeContext";
 import "../components/Profile.css";
 
 export const Profile = () => {
@@ -15,7 +13,7 @@ export const Profile = () => {
   const [success, setSuccess] = useState("");
   const [activeTab, setActiveTab] = useState<"info" | "transactions">("info");
 
-  // Estados para edição
+  // Estados de edição
   const [editingName, setEditingName] = useState(false);
   const [editingPassword, setEditingPassword] = useState(false);
   const [newName, setNewName] = useState("");
@@ -24,10 +22,7 @@ export const Profile = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const navigate = useNavigate();
-  const { theme } = useTheme();
-  const isDarkMode = theme === "dark";
 
-  // Carregar dados do usuário e transações
   useEffect(() => {
     const loadUserData = async () => {
       const {
@@ -42,7 +37,6 @@ export const Profile = () => {
     loadUserData();
   }, []);
 
-  // Carregar transações do usuário
   const loadUserTransactions = async (userId: string) => {
     setTransactionsLoading(true);
     try {
@@ -61,7 +55,6 @@ export const Profile = () => {
     }
   };
 
-  // Atualizar nome do usuário
   const handleUpdateName = async () => {
     if (!newName.trim()) {
       setError("Nome não pode estar vazio");
@@ -78,7 +71,6 @@ export const Profile = () => {
 
       if (error) throw error;
 
-      // Atualizar estado local
       setUser({
         ...user,
         user_metadata: { ...user.user_metadata, full_name: newName },
@@ -93,7 +85,6 @@ export const Profile = () => {
     }
   };
 
-  // Atualizar senha
   const handleUpdatePassword = async () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
       setError("Preencha todos os campos de senha");
@@ -133,42 +124,32 @@ export const Profile = () => {
     }
   };
 
-  // Deletar transação E SUAS PARCELAS
   const handleDeleteTransaction = async (transactionId: string) => {
     if (
       !confirm(
         "Tem certeza que deseja excluir esta transação?\n\nEsta ação não pode ser desfeita."
       )
-    ) {
+    )
       return;
-    }
 
     setDeleteLoading(transactionId);
     setError("");
 
     try {
-      // PRIMEIRO: Deletar parcelas associadas (se houver)
-      const { error: parcelasError } = await supabase
+      await supabase
         .from("parcelas")
         .delete()
         .eq("transaction_id", transactionId)
-        .eq("user_id", user.id); // ← Segurança extra com user_id
+        .eq("user_id", user.id);
 
-      if (parcelasError) {
-        console.warn("Aviso ao deletar parcelas:", parcelasError);
-        // Continua mesmo se houver erro nas parcelas
-      }
-
-      // DEPOIS: Deletar a transação principal
-      const { error: transactionError } = await supabase
+      const { error } = await supabase
         .from("transactions")
         .delete()
         .eq("id", transactionId)
-        .eq("user_id", user.id); // ← ESSENCIAL: só deleta transações do usuário atual
+        .eq("user_id", user.id);
 
-      if (transactionError) throw transactionError;
+      if (error) throw error;
 
-      // Atualizar lista local
       setTransactions(transactions.filter((t) => t.id !== transactionId));
       setSuccess("Transação excluída com sucesso!");
       setTimeout(() => setSuccess(""), 3000);
@@ -179,347 +160,215 @@ export const Profile = () => {
     }
   };
 
-  // Logout
   const handleLogout = async () => {
     setLoading(true);
     await supabase.auth.signOut();
     navigate("/login");
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("pt-BR", {
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat("pt-BR", {
       style: "currency",
       currency: "BRL",
     }).format(value);
-  };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("pt-BR");
-  };
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString("pt-BR");
 
   return (
-    <div className="profile-container">
-      <div className="profile-content">
-        {/* Header */}
+    <div className="profile-page">
+      <div className="profile-card">
         <div className="profile-header">
-          <div className="profile-avatar">
-            <div className="avatar-icon">
-              {user?.user_metadata?.full_name?.charAt(0)?.toUpperCase() || "U"}
-            </div>
+          <div className="avatar-3d">
+            {user?.user_metadata?.full_name?.charAt(0)?.toUpperCase() || "U"}
           </div>
-          <div className="profile-info">
+          <div className="profile-header-info">
             <h1 className="profile-title">Meu Perfil</h1>
             <p className="profile-subtitle">Gerencie sua conta e transações</p>
           </div>
         </div>
 
-        {/* Tabs de Navegação */}
         <div className="profile-tabs">
           <button
-            className={`tab-button ${activeTab === "info" ? "active" : ""} ${
-              isDarkMode ? "dark" : ""
-            }`}
+            className={`tab-button ${activeTab === "info" ? "active" : ""}`}
             onClick={() => setActiveTab("info")}
           >
-            <span className="tab-icon">👤</span>
-            Informações
+            👤 Informações
           </button>
           <button
             className={`tab-button ${
               activeTab === "transactions" ? "active" : ""
-            } ${isDarkMode ? "dark" : ""}`}
+            }`}
             onClick={() => setActiveTab("transactions")}
           >
-            <span className="tab-icon">💳</span>
-            Transações ({transactions.length})
+            💳 Transações ({transactions.length})
           </button>
         </div>
 
-        {/* Mensagens de Feedback */}
         {error && (
           <div className="message error">
-            <span className="message-icon">⚠️</span>
-            {error}
+            ⚠️ {error}
           </div>
         )}
-
         {success && (
           <div className="message success">
-            <span className="message-icon">✅</span>
-            {success}
+            ✅ {success}
           </div>
         )}
 
-        {/* Conteúdo das Tabs */}
-        <div className="tab-content">
-          {activeTab === "info" && (
-            <div className="info-content">
-              {/* Informações da Conta */}
-              <div className={`info-section ${isDarkMode ? "dark" : ""}`}>
-                <h3 className="section-title">Informações da Conta</h3>
+        {activeTab === "info" && (
+          <div className="info-section">
+            <h3>Informações da Conta</h3>
 
-                <div className="info-item">
-                  <label className="info-label">Nome completo</label>
-                  {editingName ? (
-                    <div className="edit-form">
-                      <input
-                        type="text"
-                        className="edit-input"
-                        value={newName}
-                        onChange={(e) => setNewName(e.target.value)}
-                        placeholder="Seu nome completo"
-                      />
-                      <div className="edit-actions">
-                        <button
-                          onClick={handleUpdateName}
-                          disabled={loading}
-                          className="save-button"
-                        >
-                          {loading ? "Salvando..." : "Salvar"}
-                        </button>
-                        <button
-                          onClick={() => {
-                            setEditingName(false);
-                            setNewName(user.user_metadata?.full_name || "");
-                          }}
-                          className="cancel-button"
-                        >
-                          Cancelar
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="info-value">
-                      <span>
-                        {user?.user_metadata?.full_name || "Não definido"}
-                      </span>
-                      <button
-                        onClick={() => setEditingName(true)}
-                        className="edit-button"
-                      >
-                        ✏️ Editar
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                <div className="info-item">
-                  <label className="info-label">Email</label>
-                  <div className="info-value">
-                    <span>{user?.email}</span>
-                    <span className="verified-badge">
-                      {user?.email_confirmed_at
-                        ? "✓ Verificado"
-                        : "⏳ Pendente"}
-                    </span>
+            <div className="info-item">
+              <label>Nome completo</label>
+              {editingName ? (
+                <div className="edit-form">
+                  <input
+                    type="text"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    placeholder="Seu nome completo"
+                  />
+                  <div className="edit-actions">
+                    <button onClick={handleUpdateName} disabled={loading}>
+                      {loading ? "Salvando..." : "Salvar"}
+                    </button>
+                    <button
+                      className="cancel"
+                      onClick={() => {
+                        setEditingName(false);
+                        setNewName(user?.user_metadata?.full_name || "");
+                      }}
+                    >
+                      Cancelar
+                    </button>
                   </div>
                 </div>
-
-                <div className="info-item">
-                  <label className="info-label">Senha</label>
-                  {editingPassword ? (
-                    <div className="edit-form">
-                      <input
-                        type="password"
-                        className="edit-input"
-                        value={currentPassword}
-                        onChange={(e) => setCurrentPassword(e.target.value)}
-                        placeholder="Senha atual"
-                      />
-                      <input
-                        type="password"
-                        className="edit-input"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        placeholder="Nova senha (mín. 6 caracteres)"
-                      />
-                      <input
-                        type="password"
-                        className="edit-input"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="Confirmar nova senha"
-                      />
-                      <div className="edit-actions">
-                        <button
-                          onClick={handleUpdatePassword}
-                          disabled={loading}
-                          className="save-button"
-                        >
-                          {loading ? "Salvando..." : "Alterar Senha"}
-                        </button>
-                        <button
-                          onClick={() => {
-                            setEditingPassword(false);
-                            setCurrentPassword("");
-                            setNewPassword("");
-                            setConfirmPassword("");
-                          }}
-                          className="cancel-button"
-                        >
-                          Cancelar
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="info-value">
-                      <span>••••••••</span>
-                      <button
-                        onClick={() => setEditingPassword(true)}
-                        className="edit-button"
-                      >
-                        🔒 Alterar
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Ações da Conta */}
-              <div className={`info-section ${isDarkMode ? "dark" : ""}`}>
-                <h3 className="section-title">Ações da Conta</h3>
-                <div className="actions-grid">
-                  <button
-                    onClick={() => navigate("/transactions")}
-                    className="action-button primary"
-                  >
-                    <span className="action-icon">➕</span>
-                    Nova Transação
-                  </button>
-                  <button
-                    onClick={() => setActiveTab("transactions")}
-                    className="action-button secondary"
-                  >
-                    <span className="action-icon">📋</span>
-                    Gerenciar Transações
-                  </button>
-                </div>
-              </div>
-
-              {/* Sair */}
-              <div className="logout-section">
-                <button
-                  onClick={handleLogout}
-                  disabled={loading}
-                  className="logout-button"
-                >
-                  {loading ? "Saindo..." : "🚪 Sair da Conta"}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {activeTab === "transactions" && (
-            <div className="transactions-content">
-              <div className="transactions-header">
-                <h3 className="section-title">Gerenciar Transações</h3>
-                <p className="section-subtitle">
-                  {transactions.length} transações encontradas
-                </p>
-              </div>
-
-              {transactionsLoading ? (
-                <div className="loading-transactions">
-                  <div className="loading-spinner"></div>
-                  <p>Carregando transações...</p>
-                </div>
-              ) : transactions.length === 0 ? (
-                <div className="empty-transactions">
-                  <div className="empty-icon">💸</div>
-                  <h4>Nenhuma transação encontrada</h4>
-                  <p>Você ainda não possui transações registradas</p>
-                  <button
-                    onClick={() => navigate("/transactions")}
-                    className="empty-action-button"
-                  >
-                    Criar Primeira Transação
-                  </button>
-                </div>
               ) : (
-                <div className="transactions-list">
-                  {transactions.map((transaction) => (
-                    <div
-                      key={transaction.id}
-                      className={`transaction-item ${isDarkMode ? "dark" : ""}`}
-                    >
-                      <div className="transaction-info">
-                        <div className="transaction-main">
-                          <span className="transaction-description">
-                            {transaction.description || "Sem descrição"}
-                            {transaction.is_parcelada && (
-                              <span className="parcelada-badge">
-                                📦 {transaction.total_parcelas}x
-                              </span>
-                            )}
-                            {transaction.is_recorrente && (
-                              <span className="recorrente-badge">
-                                🔄 Recorrente
-                              </span>
-                            )}
-                          </span>
-                          <span
-                            className={`transaction-amount ${
-                              transaction.type === "income"
-                                ? "income"
-                                : "expense"
-                            }`}
-                          >
-                            {transaction.type === "income" ? "+" : "-"}
-                            {formatCurrency(transaction.amount)}
-                          </span>
-                        </div>
-                        <div className="transaction-details">
-                          <span className="transaction-date">
-                            {formatDate(transaction.date)}
-                          </span>
-                          <span
-                            className={`transaction-type ${
-                              transaction.type === "income"
-                                ? "type-income"
-                                : "type-expense"
-                            }`}
-                          >
-                            {transaction.type === "income"
-                              ? "Receita"
-                              : "Despesa"}
-                          </span>
-                          {transaction.category && (
-                            <span className="transaction-category">
-                              {transaction.category}
-                            </span>
-                          )}
-                          {transaction.is_credit && (
-                            <span className="transaction-credit">
-                              💳 Crédito
-                            </span>
-                          )}
-                          {transaction.bank_name && (
-                            <span className="transaction-bank">
-                              🏦 {transaction.bank_name}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => handleDeleteTransaction(transaction.id)}
-                        disabled={deleteLoading === transaction.id}
-                        className="delete-button"
-                        title="Excluir transação"
-                      >
-                        {deleteLoading === transaction.id ? (
-                          <div className="delete-spinner"></div>
-                        ) : (
-                          "🗑️ Excluir"
-                        )}
-                      </button>
-                    </div>
-                  ))}
+                <div className="info-value">
+                  {user?.user_metadata?.full_name || "Não definido"}
+                  <button onClick={() => setEditingName(true)}>✏️</button>
                 </div>
               )}
             </div>
-          )}
-        </div>
+
+            <div className="info-item">
+              <label>Email</label>
+              <div className="info-value">
+                {user?.email}
+                <span className="verified">
+                  {user?.email_confirmed_at ? "✓ Verificado" : "⏳ Pendente"}
+                </span>
+              </div>
+            </div>
+
+            <div className="info-item">
+              <label>Senha</label>
+              {editingPassword ? (
+                <div className="edit-form">
+                  <input
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Senha atual"
+                  />
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Nova senha"
+                  />
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirmar nova senha"
+                  />
+                  <div className="edit-actions">
+                    <button onClick={handleUpdatePassword} disabled={loading}>
+                      {loading ? "Salvando..." : "Alterar"}
+                    </button>
+                    <button
+                      className="cancel"
+                      onClick={() => {
+                        setEditingPassword(false);
+                        setCurrentPassword("");
+                        setNewPassword("");
+                        setConfirmPassword("");
+                      }}
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="info-value">
+                  ••••••••
+                  <button onClick={() => setEditingPassword(true)}>🔒</button>
+                </div>
+              )}
+            </div>
+
+            <div className="actions">
+              <button
+                className="primary-action"
+                onClick={() => navigate("/transactions")}
+              >
+                ➕ Nova Transação
+              </button>
+              <button
+                className="secondary-action"
+                onClick={() => setActiveTab("transactions")}
+              >
+                📋 Ver Transações
+              </button>
+            </div>
+
+            <button
+              className="logout-button"
+              onClick={handleLogout}
+              disabled={loading}
+            >
+              🚪 {loading ? "Saindo..." : "Sair da Conta"}
+            </button>
+          </div>
+        )}
+
+        {activeTab === "transactions" && (
+          <div className="transactions-section">
+            {transactionsLoading ? (
+              <p>Carregando transações...</p>
+            ) : transactions.length === 0 ? (
+              <div className="empty-transactions">
+                <p>💸 Nenhuma transação encontrada</p>
+                <button onClick={() => navigate("/transactions")}>
+                  Criar Primeira Transação
+                </button>
+              </div>
+            ) : (
+              transactions.map((t) => (
+                <div key={t.id} className="transaction-row">
+                  <div>
+                    <strong>{t.description || "Sem descrição"}</strong>
+                    <p>{formatDate(t.date)}</p>
+                  </div>
+                  <div className="amount">
+                    {t.type === "income" ? "+" : "-"}
+                    {formatCurrency(Number(t.amount))}
+                  </div>
+                  <button
+                    className="delete-button"
+                    onClick={() => handleDeleteTransaction(t.id)}
+                    disabled={deleteLoading === t.id}
+                  >
+                    {deleteLoading === t.id ? "⏳" : "🗑️"}
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

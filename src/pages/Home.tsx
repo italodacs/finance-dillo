@@ -1,10 +1,23 @@
+import React from "react";
+import "./Home.css";
+
 export default function Home() {
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold text-green-600">Página Inicial 💰</h2>
-      <p className="text-gray-700 mt-2">
-        Aqui mostraremos o resumo financeiro.
-      </p>
+    <div className="home-page">
+      <div className="home-card">
+        <div className="home-icon">🏠</div>
+        <h1 className="home-title">Página Inicial 💰</h1>
+        <p className="home-text">
+          Bem-vindo ao <strong>FinanceDillo</strong> — aqui você verá um resumo
+          das suas finanças e atalhos rápidos para suas transações.
+        </p>
+        <button
+          className="home-button"
+          onClick={() => (window.location.href = "/dashboard")}
+        >
+          Ir para o Dashboard
+        </button>
+      </div>
     </div>
   );
 }

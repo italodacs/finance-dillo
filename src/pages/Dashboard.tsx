@@ -1,7 +1,6 @@
 // src/pages/Dashboard.tsx
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "../lib/supabase";
-import { useTheme } from "../context/ThemeContext";
 import { EvolutionChart } from "../components/EvolutionChart";
 import "../components/Dashboard.css";
 
@@ -22,9 +21,6 @@ type Transaction = {
 };
 
 export const Dashboard = () => {
-  const { theme } = useTheme();
-  const isDarkMode = theme === "dark";
-
   const [loading, setLoading] = useState(true);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [error, setError] = useState("");
@@ -96,7 +92,7 @@ export const Dashboard = () => {
       const baseM = baseDate.getMonth() + 1;
       const amount = parseFloat(String(t.amount)) || 0;
 
-      // 1) Recorrentes: projetar do mês base em diante
+      // 1) Recorrentes
       if (t.is_recorrente) {
         const totalMeses =
           t.recorrencia_meses && t.recorrencia_meses > 0
@@ -117,7 +113,7 @@ export const Dashboard = () => {
         return;
       }
 
-      // 2) Parceladas: distribuir valor nas N parcelas
+      // 2) Parceladas
       if (t.is_parcelada && t.total_parcelas && t.total_parcelas > 0) {
         const parcela = amount / t.total_parcelas;
 
@@ -167,7 +163,7 @@ export const Dashboard = () => {
     [transactions]
   );
 
-  // ✅ Totais do mês atual baseados no mesmo cálculo do gráfico
+  // Totais do mês atual
   const { receitaMes, despesaMes } = useMemo(() => {
     const now = new Date();
     const mesAtualFormatado = now.toLocaleDateString("pt-BR", {
@@ -212,7 +208,7 @@ export const Dashboard = () => {
 
       {/* Cards */}
       <div className="summary-cards">
-        <div className={`summary-card ${isDarkMode ? "dark" : ""}`}>
+        <div className="summary-card">
           <div className="summary-card-header">
             <span className="summary-card-title">Receitas (mês)</span>
             <span className="summary-card-indicator indicator-positive" />
@@ -223,7 +219,7 @@ export const Dashboard = () => {
           <div className="summary-card-trend">Entradas do mês atual</div>
         </div>
 
-        <div className={`summary-card ${isDarkMode ? "dark" : ""}`}>
+        <div className="summary-card">
           <div className="summary-card-header">
             <span className="summary-card-title">Despesas (mês)</span>
             <span className="summary-card-indicator indicator-negative" />
@@ -234,14 +230,16 @@ export const Dashboard = () => {
           <div className="summary-card-trend">Saídas do mês atual</div>
         </div>
 
-        <div className={`summary-card ${isDarkMode ? "dark" : ""}`}>
+        <div className="summary-card">
           <div className="summary-card-header">
             <span className="summary-card-title">Saldo (mês)</span>
             <span className="summary-card-indicator" />
           </div>
           <div
             className={`summary-card-value ${
-              receitaMes - despesaMes >= 0 ? "value-positive" : "value-negative"
+              receitaMes - despesaMes >= 0
+                ? "value-positive"
+                : "value-negative"
             }`}
           >
             {formatCurrency(receitaMes - despesaMes)}
@@ -251,12 +249,12 @@ export const Dashboard = () => {
       </div>
 
       {/* Gráfico */}
-      <div className={`chart-section ${isDarkMode ? "dark" : ""}`}>
+      <div className="chart-section">
         <EvolutionChart data={chartData} />
       </div>
 
       {/* Lista de transações */}
-      <div className={`all-transactions ${isDarkMode ? "dark" : ""}`}>
+      <div className="all-transactions">
         <div className="transactions-header">
           <h3 className="transactions-title">Transações recentes</h3>
           <span className="transactions-count">
@@ -289,10 +287,7 @@ export const Dashboard = () => {
             {transactions.slice(0, 8).map((t) => {
               const isIncome = t.type === "income";
               return (
-                <div
-                  key={t.id}
-                  className={`transaction-item ${isDarkMode ? "dark" : ""}`}
-                >
+                <div key={t.id} className="transaction-item">
                   <div className="transaction-info">
                     <div className="transaction-description">
                       {t.description || "Sem descrição"}
