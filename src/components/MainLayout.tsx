@@ -1,4 +1,3 @@
-// src/components/MainLayout.tsx
 import { ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/dillosemfundo.png";
@@ -25,7 +24,6 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       {/* HEADER SUPERIOR */}
       <header className="main-header">
         <div className="header-top">
-          {/* Logo central */}
           <div
             className="header-logo-center"
             onClick={() => navigate("/dashboard")}
