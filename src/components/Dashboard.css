@@ -1,33 +1,32 @@
-/* src/components/Dashboard.css */
+/* ===========================================
+   DASHBOARD - Tema Claro + 3D (FinanceDillo)
+   =========================================== */
 
 /* Container Principal */
 .dashboard-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 2rem 1rem;
+  background: #ffffff;
 }
 
 /* Header */
 .dashboard-header {
   text-align: center;
   margin-bottom: 3rem;
-  padding: 2rem 0;
 }
 
 .dashboard-title {
   font-size: 2.5rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-weight: 800;
+  color: #3a3a3a;
   margin-bottom: 0.5rem;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
 }
 
 .dashboard-subtitle {
   font-size: 1.125rem;
-  color: #64748b;
-  font-weight: 400;
+  color: #6b7280;
 }
 
 /* Loading State */
@@ -41,22 +40,18 @@
 }
 
 .loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #e2e8f0;
-  border-top: 4px solid #667eea;
+  width: 50px;
+  height: 50px;
+  border: 4px solid #d1d5db;
+  border-top: 4px solid #8a7354;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Cards de Resumo */
@@ -68,23 +63,21 @@
 }
 
 .summary-card {
-  background: white;
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 8px 16px rgba(0, 0, 0, 0.1),
+    0 4px 8px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
-}
-
-.summary-card.dark {
-  background: #2d3748;
-  border-color: #4a5568;
-  color: white;
 }
 
 .summary-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.2),
+    0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 .summary-card-header {
@@ -97,13 +90,9 @@
 .summary-card-title {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #64748b;
+  color: #6b7280;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-}
-
-.summary-card.dark .summary-card-title {
-  color: #a0aec0;
 }
 
 .summary-card-indicator {
@@ -123,7 +112,6 @@
 .summary-card-value {
   font-size: 2rem;
   font-weight: 700;
-  line-height: 1;
   margin-bottom: 0.5rem;
 }
 
@@ -137,41 +125,35 @@
 
 .summary-card-trend {
   font-size: 0.875rem;
-  color: #64748b;
-}
-
-.summary-card.dark .summary-card-trend {
-  color: #a0aec0;
+  color: #6b7280;
 }
 
 /* Seção do Gráfico */
 .chart-section {
-  background: white;
-  border-radius: 16px;
+  background: #ffffff;
+  border-radius: 20px;
   padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 8px 16px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.05);
   margin-bottom: 3rem;
+  transition: all 0.3s ease;
 }
 
-.chart-section.dark {
-  background: #2d3748;
-  border-color: #4a5568;
+.chart-section:hover {
+  transform: translateY(-3px);
 }
 
-/* Todas as Transações */
+/* Transações */
 .all-transactions {
-  background: white;
-  border-radius: 16px;
+  background: #ffffff;
+  border-radius: 20px;
   padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
-}
-
-.all-transactions.dark {
-  background: #2d3748;
-  border-color: #4a5568;
-  color: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 8px 16px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
 .transactions-header {
@@ -182,29 +164,21 @@
 }
 
 .transactions-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #1e293b;
-}
-
-.all-transactions.dark .transactions-title {
-  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #3a3a3a;
 }
 
 .transactions-count {
   font-size: 0.875rem;
-  color: #64748b;
-  background: #f1f5f9;
-  padding: 0.25rem 0.75rem;
+  background: #f3f4f6;
+  color: #6b7280;
+  padding: 0.4rem 0.75rem;
   border-radius: 20px;
+  font-weight: 600;
 }
 
-.all-transactions.dark .transactions-count {
-  background: #4b5563;
-  color: #d1d5db;
-}
-
-/* Estados Vazios */
+/* Estado Vazio */
 .empty-state {
   text-align: center;
   padding: 3rem 2rem;
@@ -213,43 +187,44 @@
 .empty-icon {
   font-size: 4rem;
   margin-bottom: 1rem;
-  opacity: 0.5;
+  opacity: 0.6;
 }
 
 .empty-title {
   font-size: 1.25rem;
-  font-weight: 600;
-  color: #1e293b;
+  font-weight: 700;
+  color: #3a3a3a;
   margin-bottom: 0.5rem;
 }
 
-.all-transactions.dark .empty-title {
-  color: white;
-}
-
 .empty-description {
-  color: #64748b;
+  color: #6b7280;
   margin-bottom: 2rem;
 }
 
-.all-transactions.dark .empty-description {
-  color: #a0aec0;
-}
-
 .empty-action-button {
-  padding: 0.75rem 1.5rem;
-  background: #667eea;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #8a7354, #5a5a5a);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-weight: 500;
+  border-radius: 12px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  box-shadow:
+    0 6px 0 #4a4a4a,
+    0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease;
 }
 
 .empty-action-button:hover {
-  background: #5a67d8;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+}
+
+.empty-action-button:active {
+  transform: translateY(3px);
+  box-shadow:
+    0 3px 0 #3a3a3a,
+    0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Lista de Transações */
@@ -264,22 +239,17 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.25rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #d1d5db;
   border-radius: 12px;
+  background: #fafafa;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
-  background: #fafbfc;
-}
-
-.transaction-item.dark {
-  background: #374151;
-  border-color: #4b5563;
-  color: white;
 }
 
 .transaction-item:hover {
-  border-color: #667eea;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  border-color: #8a7354;
 }
 
 .transaction-info {
@@ -288,13 +258,8 @@
 
 .transaction-description {
   font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-}
-
-.transaction-item.dark .transaction-description {
-  color: white;
+  color: #3a3a3a;
+  margin-bottom: 0.25rem;
 }
 
 .transaction-meta {
@@ -306,7 +271,7 @@
 
 .transaction-type {
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   padding: 0.25rem 0.75rem;
   border-radius: 6px;
   text-transform: uppercase;
@@ -324,18 +289,14 @@
 
 .transaction-date {
   font-size: 0.875rem;
-  color: #64748b;
+  color: #6b7280;
   font-weight: 500;
-}
-
-.transaction-item.dark .transaction-date {
-  color: #a0aec0;
 }
 
 .transaction-credit {
   font-size: 0.75rem;
-  background: #dbeafe;
-  color: #1e40af;
+  background: #f3f4f6;
+  color: #1e3a8a;
   padding: 0.25rem 0.5rem;
   border-radius: 6px;
   font-weight: 500;
@@ -343,8 +304,8 @@
 
 .transaction-category {
   font-size: 0.75rem;
-  background: #f3e8ff;
-  color: #7c3aed;
+  background: #fef3c7;
+  color: #92400e;
   padding: 0.25rem 0.5rem;
   border-radius: 6px;
   font-weight: 500;
@@ -365,64 +326,32 @@
 
 /* Responsividade */
 @media (max-width: 768px) {
-  .dashboard-header {
-    margin-bottom: 2rem;
-    padding: 1rem 0;
-  }
-
-  .dashboard-title {
-    font-size: 2rem;
-  }
-
   .summary-cards {
     grid-template-columns: 1fr;
-    gap: 1rem;
   }
 
   .chart-section {
     padding: 1.5rem;
-    margin-bottom: 2rem;
   }
 
-  .all-transactions {
-    padding: 1.5rem;
+  .transactions-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 
   .transaction-item {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
   .transaction-amount {
     align-self: flex-end;
   }
-
-  .transactions-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
-  }
 }
 
-@media (max-width: 480px) {
-  .dashboard-container {
-    padding: 0 0.5rem;
-  }
-
-  .dashboard-title {
-    font-size: 1.75rem;
-  }
-
-  .summary-card {
-    padding: 1.25rem;
-  }
-
-  .summary-card-value {
-    font-size: 1.75rem;
-  }
-
-  .transaction-meta {
-    gap: 0.5rem;
-  }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }

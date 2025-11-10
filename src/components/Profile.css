@@ -1,5 +1,5 @@
 /* ===========================================
-   PROFILE PAGE - FinanceDillo (Tema Claro + 3D)
+   PROFILE PAGE - FinanceDillo (Tema Marrom Suave)
    =========================================== */
 
 /* Página principal */
@@ -20,17 +20,13 @@
   max-width: 800px;
   width: 100%;
   padding: 2.5rem;
-  box-shadow:
-    0 12px 24px rgba(0, 0, 0, 0.15),
-    0 4px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
 
 .profile-card:hover {
   transform: translateY(-3px);
-  box-shadow:
-    0 16px 28px rgba(0, 0, 0, 0.25),
-    0 6px 10px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
 }
 
 /* Header */
@@ -41,7 +37,7 @@
   margin-bottom: 2rem;
 }
 
-/* Avatar 3D */
+/* Avatar liso com degradê marrom */
 .avatar-3d {
   width: 90px;
   height: 90px;
@@ -53,19 +49,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow:
-    0 6px 0 #4a4a4a,
-    0 4px 10px rgba(0, 0, 0, 0.25);
+  border: none;
+  box-shadow: none; /* Sem efeito 3D */
   transition: all 0.2s ease;
 }
 
 .avatar-3d:hover {
-  transform: translateY(-3px);
-  box-shadow:
-    0 10px 0 #3b3b3b,
-    0 8px 16px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
 }
 
+/* Info do header */
 .profile-header-info {
   flex: 1;
 }
@@ -93,15 +86,12 @@
 .tab-button {
   background: #f3f4f6;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  border-radius: 10px;
   padding: 0.75rem 1.5rem;
   font-weight: 600;
   color: #374151;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow:
-    0 4px 0 #d1d5db,
-    0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
 .tab-button:hover {
@@ -109,27 +99,17 @@
   transform: translateY(-2px);
 }
 
-.tab-button:active {
-  transform: translateY(3px);
-  box-shadow:
-    0 1px 0 #9ca3af,
-    0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
 .tab-button.active {
   background: linear-gradient(135deg, #8a7354, #5a5a5a);
   color: white;
-  box-shadow:
-    0 6px 0 #4a4a4a,
-    0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Mensagens de feedback */
+/* Mensagens */
 .message {
   text-align: center;
   font-weight: 500;
   padding: 1rem;
-  border-radius: 12px;
+  border-radius: 10px;
   margin-bottom: 1rem;
 }
 
@@ -145,7 +125,7 @@
   color: #15803d;
 }
 
-/* Seção de informações */
+/* Seções de informações */
 .info-section {
   background: #f9fafb;
   border: 1px solid #e2e8f0;
@@ -182,23 +162,15 @@
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow:
-    0 3px 0 #4a4a4a,
-    0 3px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
 }
 
 .info-value button:hover {
   transform: translateY(-2px);
+  opacity: 0.9;
 }
 
-.info-value button:active {
-  transform: translateY(2px);
-  box-shadow:
-    0 1px 0 #3a3a3a,
-    0 2px 4px rgba(0, 0, 0, 0.15);
-}
-
-/* Inputs e ações de edição */
+/* Inputs de edição */
 .edit-form input {
   width: 100%;
   padding: 0.75rem;
@@ -215,6 +187,7 @@
   outline: none;
 }
 
+/* Ações de edição */
 .edit-actions {
   display: flex;
   gap: 0.5rem;
@@ -233,25 +206,11 @@
 .edit-actions button:first-child {
   background: linear-gradient(135deg, #8a7354, #5a5a5a);
   color: white;
-  box-shadow:
-    0 5px 0 #4a4a4a,
-    0 3px 10px rgba(0, 0, 0, 0.25);
-}
-
-.edit-actions button:first-child:hover {
-  transform: translateY(-2px);
 }
 
 .edit-actions .cancel {
   background: #e5e7eb;
   color: #374151;
-  box-shadow:
-    0 3px 0 #cbd5e1,
-    0 3px 8px rgba(0, 0, 0, 0.1);
-}
-
-.edit-actions .cancel:hover {
-  background: #d1d5db;
 }
 
 /* Ações rápidas */
@@ -270,25 +229,11 @@
   cursor: pointer;
   border: none;
   transition: all 0.2s ease;
-  box-shadow:
-    0 6px 0 #d1d5db,
-    0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .primary-action {
   background: linear-gradient(135deg, #8a7354, #5a5a5a);
   color: white;
-}
-
-.primary-action:hover {
-  transform: translateY(-2px);
-}
-
-.primary-action:active {
-  transform: translateY(3px);
-  box-shadow:
-    0 3px 0 #4a4a4a,
-    0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .secondary-action {
@@ -298,7 +243,6 @@
 
 .secondary-action:hover {
   background: #e5e7eb;
-  transform: translateY(-2px);
 }
 
 /* Botão de logout */
@@ -313,20 +257,10 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow:
-    0 5px 0 #b91c1c,
-    0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .logout-button:hover {
-  transform: translateY(-2px);
-}
-
-.logout-button:active {
-  transform: translateY(3px);
-  box-shadow:
-    0 3px 0 #7f1d1d,
-    0 2px 8px rgba(0, 0, 0, 0.2);
+  background: #dc2626;
 }
 
 /* Lista de transações */
@@ -343,7 +277,7 @@
   border-radius: 10px;
   padding: 1rem 1.25rem;
   margin-bottom: 1rem;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
 }
 
@@ -357,6 +291,7 @@
   color: #1e293b;
 }
 
+/* Botão de exclusão */
 .delete-button {
   background: #ef4444;
   border: none;
@@ -366,20 +301,11 @@
   cursor: pointer;
   font-weight: 600;
   transition: all 0.2s ease;
-  box-shadow:
-    0 4px 0 #b91c1c,
-    0 3px 8px rgba(0, 0, 0, 0.25);
 }
 
 .delete-button:hover {
+  background: #dc2626;
   transform: translateY(-2px);
-}
-
-.delete-button:active {
-  transform: translateY(3px);
-  box-shadow:
-    0 2px 0 #7f1d1d,
-    0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 /* Responsividade */

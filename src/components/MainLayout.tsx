@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import logo from "../assets/dillosemfundo.png";
+import logo from "../assets/taman.png";
 import "./MainLayout.css";
 
 interface MainLayoutProps {
@@ -30,18 +30,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           >
             <img
               src={logo}
-              alt="FinanceDillo logo"
+              alt="Logo"
               className="logo-image"
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 8,
-                objectFit: "contain",
-              }}
             />
-            <span className="logo-text">
-              <strong>FinanceDillo</strong>
-            </span>
           </div>
         </div>
       </header>
@@ -51,7 +42,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
         <div className="page-transition">{children}</div>
       </main>
 
-      {/* NAVBAR INFERIOR (somente mobile) */}
+      {/* NAVBAR INFERIOR */}
       <nav className="bottom-nav">
         {navItems.map((item) => (
           <button

@@ -1,21 +1,20 @@
 /* ===========================================
-   MAIN LAYOUT - FinanceDillo (Tema Claro)
+   MAIN LAYOUT - FinanceDillo (Tema Marrom Suave)
    =========================================== */
 
 /* Layout Principal */
 .main-layout {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: #ffffff; /* Fundo branco puro */
   display: flex;
   flex-direction: column;
 }
 
 /* ======= HEADER SUPERIOR ======= */
 .main-header {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
   z-index: 900;
@@ -28,39 +27,26 @@
   align-items: center;
   height: 70px;
   padding: 0 1.5rem;
-  position: relative;
 }
 
-/* Centraliza logo e nome */
+/* Centraliza logo */
 .header-logo-center {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
   cursor: pointer;
   transition: transform 0.2s ease;
 }
 
 .header-logo-center:hover {
-  transform: translateY(-1px);
+  transform: scale(1.05);
 }
 
 /* Logo PNG */
 .logo-image {
-  width: 36px;
-  height: 36px;
+  width: 60px;
+  height: auto;
   object-fit: contain;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
-}
-
-/* Nome do app */
-.logo-text {
-  font-size: 1.5rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 /* ======= CONTEÚDO PRINCIPAL ======= */
@@ -96,13 +82,13 @@
   left: 0;
   right: 0;
   height: 64px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
   display: flex;
   justify-content: space-around;
   align-items: center;
   z-index: 1000;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .bottom-nav-item {
@@ -112,20 +98,36 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #64748b;
+  color: #6b7280;
   font-size: 0.8rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
+}
+
+.bottom-nav-item:hover {
+  color: #8a7354;
 }
 
 .bottom-nav-item.active {
-  color: #ff6b35;
+  color: #8a7354;
+  font-weight: 600;
   transform: translateY(-2px);
+}
+
+.bottom-nav-item.active .bottom-nav-icon {
+  background: linear-gradient(135deg, #8a7354, #5a5a5a);
+  background-clip: text; /* <-- padrão (corrige o aviso) */
+  -webkit-background-clip: text; /* necessário para Chrome/Safari */
+  -webkit-text-fill-color: transparent;
 }
 
 .bottom-nav-icon {
   font-size: 1.3rem;
   margin-bottom: 4px;
+}
+
+.bottom-nav-label {
+  font-size: 0.75rem;
 }
 
 /* ======= RESPONSIVIDADE ======= */
@@ -135,8 +137,8 @@
     padding-bottom: 80px; /* espaço para navbar inferior */
   }
 
-  .logo-text {
-    font-size: 1.25rem;
+  .logo-image {
+    width: 48px;
   }
 }
 
@@ -144,5 +146,9 @@
   .main-content {
     padding: 1rem 0.75rem;
     padding-bottom: 80px;
+  }
+
+  .logo-image {
+    width: 42px;
   }
 }
