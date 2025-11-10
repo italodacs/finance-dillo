@@ -1,5 +1,5 @@
 /* ===========================================
-   LOGIN / REGISTER STYLES - FinanceDillo (Marrom-Cinza Suave)
+   LOGIN STYLES - FinanceDillo (Tema Marrom-Cinza Suave)
    =========================================== */
 
 /* Container Principal */
@@ -14,14 +14,8 @@
 }
 
 /* Fundo branco puro */
-.auth-bg-login,
-.auth-bg-register {
+.auth-bg-login {
   background: #ffffff;
-}
-
-/* Remove elementos decorativos */
-.auth-bg-elements {
-  display: none;
 }
 
 /* Card Principal */
@@ -65,7 +59,6 @@
   width: 100%;
   height: auto;
   object-fit: contain;
-  display: block;
 }
 
 /* Título e Subtítulo */
@@ -81,7 +74,7 @@
   font-size: 1rem;
 }
 
-/* Formulário */
+/* Campos do formulário */
 .auth-form-group {
   margin-bottom: 1.5rem;
 }
@@ -106,21 +99,19 @@
   border-radius: 12px;
   background: white;
   font-size: 1rem;
-  transition: all 0.3s ease;
   color: #1e293b;
+  transition: all 0.3s ease;
 }
 
 .auth-input:focus {
   outline: none;
-  border-color: #7c6a54;
-  box-shadow: 0 0 0 3px rgba(124, 106, 84, 0.15);
+  border-color: #8a7354;
+  box-shadow: 0 0 0 3px rgba(138, 115, 84, 0.15);
 }
 
-.auth-input::placeholder {
-  color: #94a3b8;
-}
-
-/* Botão Principal */
+/* ==============================
+   BOTÃO PRINCIPAL (Marrom-Cinza)
+   ============================== */
 .auth-button {
   width: 100%;
   padding: 1rem 2rem;
@@ -136,24 +127,23 @@
   gap: 0.5rem;
 }
 
-/* 🔹 Gradiente marrom-cinza suave */
 .auth-button-primary {
-  background: linear-gradient(135deg, #8a7354 0%, #5a5a5a 100%);
-  color: white;
+  background: linear-gradient(135deg, #8a7354 0%, #5a5a5a 100%) !important;
+  color: #ffffff !important;
   box-shadow:
     0 6px 0 #3d3d3d,
     0 4px 12px rgba(0, 0, 0, 0.25);
   transform: translateY(0);
 }
 
-/* Hover - leve elevação */
+/* Hover */
 .auth-button-primary:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow:
-    0 10px 18px rgba(138, 115, 84, 0.5);
+    0 10px 18px rgba(138, 115, 84, 0.4);
 }
 
-/* Efeito “afundar” ao clicar */
+/* Active */
 .auth-button-primary:active {
   transform: translateY(3px);
   box-shadow:
@@ -164,34 +154,6 @@
 .auth-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-  transform: none !important;
-}
-
-/* Spinner */
-.auth-spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid transparent;
-  border-top: 2px solid currentColor;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-/* Mensagens de Erro */
-.auth-error {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #b91c1c;
-  padding: 1rem;
-  border-radius: 12px;
-  font-size: 0.875rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.auth-error-icon {
-  flex-shrink: 0;
 }
 
 /* Divider */
@@ -213,7 +175,7 @@
   font-size: 0.875rem;
 }
 
-/* Links e Footer */
+/* Navegação e rodapé */
 .auth-nav {
   text-align: center;
   margin-top: 2rem;
@@ -227,7 +189,6 @@
   color: #8a7354;
   font-weight: 600;
   text-decoration: none;
-  cursor: pointer;
 }
 
 .auth-nav-link:hover {
@@ -244,10 +205,24 @@
   font-size: 0.875rem;
 }
 
+/* Spinner */
+.auth-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
 /* Animações */
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsividade */
