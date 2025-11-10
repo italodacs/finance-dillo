@@ -175,6 +175,24 @@ export const Profile = () => {
   const formatDate = (dateString: string) =>
     new Date(dateString).toLocaleDateString("pt-BR");
 
+  // 🔹 Agrupa as transações por tipo e banco
+  const groupedTransactions = () => {
+    const receitas = transactions.filter((t) => t.type === "income");
+    const despesas = transactions.filter((t) => t.type === "expense");
+
+    // agrupar despesas por banco
+    const despesasPorBanco: Record<string, any[]> = {};
+    despesas.forEach((t) => {
+      const banco = t.bank_name || "Outros";
+      if (!despesasPorBanco[banco]) despesasPorBanco[banco] = [];
+      despesasPorBanco[banco].push(t);
+    });
+
+    return { receitas, despesasPorBanco };
+  };
+
+  const { receitas, despesasPorBanco } = groupedTransactions();
+
   return (
     <div className="profile-page">
       <div className="profile-card">
@@ -184,7 +202,7 @@ export const Profile = () => {
           </div>
           <div className="profile-header-info">
             <h1 className="profile-title">Meu Perfil</h1>
-            <p className="profile-subtitle">Gerencie sua conta e transações</p>
+            <p className="profile-subtitle">Gerencie sua conta e informações</p>
           </div>
         </div>
 
@@ -193,7 +211,7 @@ export const Profile = () => {
             className={`tab-button ${activeTab === "info" ? "active" : ""}`}
             onClick={() => setActiveTab("info")}
           >
-            👤 Informações
+            Informações
           </button>
           <button
             className={`tab-button ${
@@ -201,20 +219,12 @@ export const Profile = () => {
             }`}
             onClick={() => setActiveTab("transactions")}
           >
-            💳 Transações ({transactions.length})
+            Transações ({transactions.length})
           </button>
         </div>
 
-        {error && (
-          <div className="message error">
-            ⚠️ {error}
-          </div>
-        )}
-        {success && (
-          <div className="message success">
-            ✅ {success}
-          </div>
-        )}
+        {error && <div className="message error">{error}</div>}
+        {success && <div className="message success">{success}</div>}
 
         {activeTab === "info" && (
           <div className="info-section">
@@ -248,7 +258,7 @@ export const Profile = () => {
               ) : (
                 <div className="info-value">
                   {user?.user_metadata?.full_name || "Não definido"}
-                  <button onClick={() => setEditingName(true)}>✏️</button>
+                  <button onClick={() => setEditingName(true)}>Editar</button>
                 </div>
               )}
             </div>
@@ -258,7 +268,7 @@ export const Profile = () => {
               <div className="info-value">
                 {user?.email}
                 <span className="verified">
-                  {user?.email_confirmed_at ? "✓ Verificado" : "⏳ Pendente"}
+                  {user?.email_confirmed_at ? "Verificado" : "Pendente"}
                 </span>
               </div>
             </div>
@@ -305,24 +315,11 @@ export const Profile = () => {
               ) : (
                 <div className="info-value">
                   ••••••••
-                  <button onClick={() => setEditingPassword(true)}>🔒</button>
+                  <button onClick={() => setEditingPassword(true)}>
+                    Alterar
+                  </button>
                 </div>
               )}
-            </div>
-
-            <div className="actions">
-              <button
-                className="primary-action"
-                onClick={() => navigate("/transactions")}
-              >
-                ➕ Nova Transação
-              </button>
-              <button
-                className="secondary-action"
-                onClick={() => setActiveTab("transactions")}
-              >
-                📋 Ver Transações
-              </button>
             </div>
 
             <button
@@ -330,7 +327,7 @@ export const Profile = () => {
               onClick={handleLogout}
               disabled={loading}
             >
-              🚪 {loading ? "Saindo..." : "Sair da Conta"}
+              {loading ? "Saindo..." : "Sair da Conta"}
             </button>
           </div>
         )}
@@ -341,31 +338,53 @@ export const Profile = () => {
               <p>Carregando transações...</p>
             ) : transactions.length === 0 ? (
               <div className="empty-transactions">
-                <p>💸 Nenhuma transação encontrada</p>
-                <button onClick={() => navigate("/transactions")}>
-                  Criar Primeira Transação
-                </button>
+                <p>Nenhuma transação encontrada</p>
               </div>
             ) : (
-              transactions.map((t) => (
-                <div key={t.id} className="transaction-row">
-                  <div>
-                    <strong>{t.description || "Sem descrição"}</strong>
-                    <p>{formatDate(t.date)}</p>
+              <>
+                {/* RECEITAS */}
+                {receitas.length > 0 && (
+                  <div className="transaction-group">
+                    <h4>Receitas</h4>
+                    {receitas.map((t) => (
+                      <div key={t.id} className="transaction-row">
+                        <div>
+                          <strong>{t.description || "Sem descrição"}</strong>
+                          <p>{formatDate(t.date)}</p>
+                        </div>
+                        <div className="amount positive">
+                          +{formatCurrency(Number(t.amount))}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="amount">
-                    {t.type === "income" ? "+" : "-"}
-                    {formatCurrency(Number(t.amount))}
+                )}
+
+                {/* DESPESAS AGRUPADAS POR BANCO */}
+                {Object.entries(despesasPorBanco).map(([banco, lista]) => (
+                  <div key={banco} className="transaction-group">
+                    <h4>{banco}</h4>
+                    {lista.map((t) => (
+                      <div key={t.id} className="transaction-row">
+                        <div>
+                          <strong>{t.description || "Sem descrição"}</strong>
+                          <p>{formatDate(t.date)}</p>
+                        </div>
+                        <div className="amount negative">
+                          -{formatCurrency(Number(t.amount))}
+                        </div>
+                        <button
+                          className="delete-button"
+                          onClick={() => handleDeleteTransaction(t.id)}
+                          disabled={deleteLoading === t.id}
+                        >
+                          {deleteLoading === t.id ? "Aguarde..." : "Excluir"}
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                  <button
-                    className="delete-button"
-                    onClick={() => handleDeleteTransaction(t.id)}
-                    disabled={deleteLoading === t.id}
-                  >
-                    {deleteLoading === t.id ? "⏳" : "🗑️"}
-                  </button>
-                </div>
-              ))
+                ))}
+              </>
             )}
           </div>
         )}

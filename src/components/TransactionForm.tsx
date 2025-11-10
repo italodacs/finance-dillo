@@ -12,32 +12,29 @@ const BANCOS = [
   "Banco do Brasil",
   "Caixa",
   "Inter",
-  "C6 Bank",
   "PicPay",
   "Will",
-  "Outros",
+  "Outro",
 ];
 
 // ===== Categorias =====
 const CATEGORIAS_DESPESA = [
-  "Alimentação",
   "Supermercado",
   "Restaurante / Lanches",
   "Transporte",
-  "Combustível",
-  "Moradia",
+  "Casa",
   "Aluguel",
-  "Energia Elétrica",
+  "Energia",
   "Internet",
-  "Água e Saneamento",
+  "Água",
   "Saúde",
   "Educação",
   "Pet",
-  "Passeio",
   "Viagem",
   "Assinaturas",
   "Vestuário",
-  "Outros",
+  "Lazer",
+  "Outros"
 ];
 
 const CATEGORIAS_RECEITA = [
@@ -67,13 +64,13 @@ export const TransactionForm = () => {
 
   const navigate = useNavigate();
 
-  // Data atual
+  // Define data atual ao carregar
   useEffect(() => {
     const now = new Date();
     setData(now.toISOString().split("T")[0]);
   }, []);
 
-  // Ajusta categorias e crédito
+  // Ajusta categorias e crédito quando tipo muda
   useEffect(() => {
     if (tipo === "income") {
       setIsCredito(false);
@@ -144,7 +141,6 @@ export const TransactionForm = () => {
         return;
       }
 
-      // Converter valor
       const valorLimpo = valor.replace(/[^\d,]/g, "").replace(",", ".");
       const valorNumerico = parseFloat(valorLimpo);
 
@@ -154,7 +150,6 @@ export const TransactionForm = () => {
         return;
       }
 
-      // Dados da transação
       const transactionData: any = {
         user_id: user.id,
         amount: valorNumerico,
@@ -171,7 +166,6 @@ export const TransactionForm = () => {
           tipoTransacao === "recorrente" ? recorrenciaMeses : null,
       };
 
-      // Complementos na descrição
       if (tipoTransacao === "parcelada") {
         transactionData.description = transactionData.description
           ? `${transactionData.description} (${totalParcelas}x)`
@@ -211,8 +205,8 @@ export const TransactionForm = () => {
           {tipo === "income" ? "Adicione suas receitas" : "Adicione suas despesas"}
         </p>
 
-        {error && <div className="message error">⚠️ {error}</div>}
-        {success && <div className="message success">✅ {success}</div>}
+        {error && <div className="message error">{error}</div>}
+        {success && <div className="message success">{success}</div>}
 
         <form onSubmit={handleSubmit}>
           {/* Valor */}
@@ -242,7 +236,7 @@ export const TransactionForm = () => {
                   checked={tipo === "income"}
                   onChange={() => setTipo("income")}
                 />
-                💰 Receita
+                Receita
               </label>
               <label className={`radio-option ${tipo === "expense" ? "active" : ""}`}>
                 <input
@@ -252,7 +246,7 @@ export const TransactionForm = () => {
                   checked={tipo === "expense"}
                   onChange={() => setTipo("expense")}
                 />
-                💸 Despesa
+                Despesa
               </label>
             </div>
           </div>
@@ -283,9 +277,9 @@ export const TransactionForm = () => {
                     checked={tipoTransacao === t}
                     onChange={() => setTipoTransacao(t as TipoTransacao)}
                   />
-                  {t === "avulsa" && "⚡ Avulsa"}
-                  {t === "parcelada" && "📦 Parcelada"}
-                  {t === "recorrente" && "🔄 Recorrente"}
+                  {t === "avulsa" && "Avulsa"}
+                  {t === "parcelada" && "Parcelada"}
+                  {t === "recorrente" && "Recorrente"}
                 </label>
               ))}
             </div>
@@ -328,19 +322,21 @@ export const TransactionForm = () => {
             </div>
           )}
 
-          {/* Crédito */}
+          {/* Compra no crédito */}
           {tipo === "expense" && (
             <>
-              <div className="form-group checkbox-group">
-                <label>
+              <div className="checkbox-group">
+                <label>Compra no crédito?</label>
+                <label className="switch">
                   <input
                     type="checkbox"
                     checked={isCredito}
                     onChange={(e) => setIsCredito(e.target.checked)}
-                  />{" "}
-                  Compra no crédito?
+                  />
+                  <span className="slider"></span>
                 </label>
               </div>
+
               {isCredito && (
                 <div className="form-group">
                   <label>Banco *</label>

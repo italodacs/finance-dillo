@@ -1,8 +1,7 @@
 import { ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import logo from "../taman.png";
 
-// Importa as imagens do diretório assets
+// Importa os ícones da pasta src/assets
 import painelIcon from "../assets/painel-de-controle.png";
 import transacaoIcon from "../assets/transacao.png";
 import pessoaIcon from "../assets/pessoa.png";
@@ -34,7 +33,8 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             className="header-logo-center"
             onClick={() => navigate("/dashboard")}
           >
-            <img src={logo} alt="Logo" className="logo-image" />
+            {/* Caminho absoluto pois está em /public */}
+            <img src="/taman.png" alt="Logo" className="logo-image" />
           </div>
         </div>
       </header>

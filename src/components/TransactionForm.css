@@ -111,49 +111,107 @@ select:focus {
   color: #5a5a5a;
 }
 
-/* Radio group */
+/* ======= TIPOS DE TRANSAÇÃO ======= */
 .radio-group {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
 .radio-option {
   flex: 1;
-  border: 1px solid #d1d5db;
+  border: 1.5px solid #e5e7eb;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 0.9rem 1rem;
   text-align: center;
   font-weight: 600;
-  background: #f3f4f6;
+  background: #ffffff;
   color: #374151;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .radio-option:hover {
+  border-color: #8a7354;
+  color: #8a7354;
   transform: translateY(-2px);
 }
 
 .radio-option.active {
-  background: linear-gradient(135deg, #8a7354, #5a5a5a);
-  color: white;
-  border-color: #8a7354;
-  box-shadow: 0 0 10px rgba(138, 115, 84, 0.25);
+  background: linear-gradient(135deg, #8a7354, #b19572);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 10px rgba(138, 115, 84, 0.3);
 }
 
 .radio-option input {
   display: none;
 }
 
-/* Ícones dentro das opções */
+/* Remove ícones antigos */
 .radio-option .icon {
-  display: block;
-  font-size: 1.5rem;
-  margin-bottom: 0.25rem;
-  background: linear-gradient(135deg, #8a7354, #5a5a5a);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  display: none;
+}
+
+/* ======= CAMPO "COMPRA NO CRÉDITO?" ======= */
+.checkbox-group {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+}
+
+.checkbox-group label {
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+/* Switch estilizado */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #d1d5db;
+  border-radius: 34px;
+  transition: 0.3s;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.switch input:checked + .slider {
+  background-color: #8a7354;
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(20px);
 }
 
 /* Texto informativo */
@@ -208,26 +266,6 @@ select:focus {
 .back-button:hover {
   transform: translateY(-2px);
   background: #e5e7eb;
-}
-
-/* Checkbox */
-.checkbox-group {
-  margin-top: 0.5rem;
-}
-
-.checkbox-group label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #f9fafb;
-  border-radius: 10px;
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.checkbox-group input {
-  accent-color: #8a7354;
 }
 
 /* Animações */

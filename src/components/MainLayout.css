@@ -2,10 +2,10 @@
    MAIN LAYOUT - FinanceDillo (Tema Marrom Suave)
    =========================================== */
 
-/* Layout Principal */
+/* ======= LAYOUT PRINCIPAL ======= */
 .main-layout {
   min-height: 100vh;
-  background: #ffffff; /* Fundo branco puro */
+  background: #ffffff;
   display: flex;
   flex-direction: column;
 }
@@ -20,33 +20,52 @@
   z-index: 900;
 }
 
-/* ======= HEADER ALINHADO ======= */
+/* ======= HEADER CONTEÚDO ======= */
 .header-top {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 70px;
-  padding: 0 1.5rem;
+  height: 60px; /* altura do header */
+  overflow: hidden; /* corta qualquer parte do logo que ultrapasse */
+  padding: 0;
 }
 
-/* Centraliza logo */
+/* ======= LOGO CENTRAL ======= */
 .header-logo-center {
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: transform 0.2s ease;
+  background-color: transparent;
+  height: 100%;
 }
 
 .header-logo-center:hover {
   transform: scale(1.05);
 }
 
-/* Logo PNG */
+/* ======= LOGO PNG ======= */
 .logo-image {
-  width: 60px;
-  height: auto;
+  height: 100%;
+  max-height: 55px; /* impede que ultrapasse o header */
+  width: auto;
   object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .logo-image {
+    width: 35px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .logo-image {
+    width: 110px; /* um pouco maior em telas grandes */
+  }
 }
 
 /* ======= CONTEÚDO PRINCIPAL ======= */
@@ -59,7 +78,7 @@
   box-sizing: border-box;
 }
 
-/* Transição de Páginas */
+/* ======= TRANSIÇÃO DE PÁGINAS ======= */
 .page-transition {
   animation: fadeInUp 0.5s ease-out;
 }
@@ -75,7 +94,7 @@
   }
 }
 
-/* ======= BOTTOM NAV (MOBILE) ======= */
+/* ======= NAVBAR INFERIOR (MOBILE) ======= */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -91,6 +110,7 @@
   box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
 }
 
+/* ======= ITENS DO NAVBAR ======= */
 .bottom-nav-item {
   background: transparent;
   border: none;
@@ -101,6 +121,7 @@
   color: #6b7280;
   font-size: 0.8rem;
   cursor: pointer;
+  flex: 1;
   transition: all 0.25s ease;
 }
 
@@ -108,53 +129,29 @@
   color: #8a7354;
 }
 
-/* Aba ativa: apenas o texto marrom */
+/* Aba ativa: marrom suave */
 .bottom-nav-item.active {
   color: #8a7354;
   transform: translateY(-2px);
 }
 
-/* Ícone mantém cor normal */
-.bottom-nav-item.active .bottom-nav-icon {
-  color: #64748b; /* cinza neutro, sem degradê */
-  background: none;
-}
-
-.bottom-nav-icon {
-  font-size: 1.3rem;
-  margin-bottom: 4px;
-}
-
-.bottom-nav-label {
-  font-size: 0.75rem;
-}
-
-/* ======= RESPONSIVIDADE ======= */
-@media (max-width: 768px) {
-  .main-content {
-    padding: 1.5rem 1rem;
-    padding-bottom: 80px; /* espaço para navbar inferior */
-  }
-
-  .logo-image {
-    width: 48px;
-  }
-}
-
-@media (max-width: 480px) {
-  .main-content {
-    padding: 1rem 0.75rem;
-    padding-bottom: 80px;
-  }
-
-  .logo-image {
-    width: 42px;
-  }
-}
-
+/* ======= ÍCONES PNG ======= */
 .bottom-nav-icon-img {
   width: 24px;
   height: 24px;
   object-fit: contain;
   margin-bottom: 4px;
+  opacity: 0.8;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.bottom-nav-item.active .bottom-nav-icon-img {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* ======= TEXTO DOS ITENS ======= */
+.bottom-nav-label {
+  font-size: 0.75rem;
+  line-height: 1rem;
 }
