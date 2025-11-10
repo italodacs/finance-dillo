@@ -1,21 +1,19 @@
-// src/pages/Register.tsx
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
-import "../components/LoginRegister.css";
+import "../components/Register.css";
 
 export const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async () => {
-    if (!email || !password || !fullName) {
-      setError("Preencha todos os campos obrigatórios!");
+    if (!email || !password || !confirmPassword) {
+      setError("Preencha todos os campos!");
       return;
     }
 
@@ -24,24 +22,16 @@ export const Register = () => {
       return;
     }
 
-    if (password.length < 6) {
-      setError("A senha deve ter pelo menos 6 caracteres!");
-      return;
-    }
-
     setLoading(true);
     setError("");
 
     try {
       const { data, error } = await supabase.auth.signUp({
-        email: email.trim().toLowerCase(),
+        email,
         password,
-        options: {
-          data: {
-            full_name: fullName,
-          },
-        },
       });
+
+      setLoading(false);
 
       if (error) {
         setError(error.message);
@@ -49,28 +39,35 @@ export const Register = () => {
         navigate("/dashboard");
       }
     } catch (err) {
-      setError("Erro ao cadastrar usuário.");
-      console.error(err);
-    } finally {
       setLoading(false);
+      setError("Erro ao criar conta.");
+      console.error(err);
     }
   };
 
   return (
     <div className="auth-container auth-bg-register">
-      <div className="auth-bg-elements">
-        <div className="auth-bg-circle auth-bg-circle-1"></div>
-        <div className="auth-bg-circle auth-bg-circle-2"></div>
-        <div className="auth-bg-circle auth-bg-circle-3"></div>
-      </div>
+      <div className="auth-bg-elements" />
 
       <div className="auth-card">
         <div className="auth-header">
-          <div className="auth-logo auth-logo-register">
-            <span className="auth-logo-icon">🚀</span>
+          {/* LOGO centralizada */}
+          <div className="auth-logo">
+            <img
+              src="/taman.png"
+              alt="FinanceDillo"
+              className="auth-logo-img"
+              width={140}
+              height={140}
+              loading="eager"
+              decoding="async"
+            />
           </div>
-          <h1 className="auth-title">Criar Conta</h1>
-          <p className="auth-subtitle">Comece sua jornada financeira</p>
+
+          <h1 className="auth-title">Crie sua conta</h1>
+          <p className="auth-subtitle">
+            Preencha os campos abaixo para começar
+          </p>
         </div>
 
         <form
@@ -79,20 +76,6 @@ export const Register = () => {
             handleRegister();
           }}
         >
-          <div className="auth-form-group">
-            <label className="auth-label auth-label-required">
-              Nome completo
-            </label>
-            <input
-              type="text"
-              className="auth-input"
-              placeholder="Seu nome completo"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required
-            />
-          </div>
-
           <div className="auth-form-group">
             <label className="auth-label auth-label-required">Email</label>
             <input
@@ -110,22 +93,21 @@ export const Register = () => {
             <input
               type="password"
               className="auth-input"
-              placeholder="Mínimo 6 caracteres"
+              placeholder="Crie uma senha"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              minLength={6}
             />
           </div>
 
           <div className="auth-form-group">
             <label className="auth-label auth-label-required">
-              Confirmar senha
+              Confirmar Senha
             </label>
             <input
               type="password"
               className="auth-input"
-              placeholder="Digite a senha novamente"
+              placeholder="Repita sua senha"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
@@ -148,20 +130,6 @@ export const Register = () => {
             </div>
           )}
 
-          <div className="auth-checkbox">
-            <input type="checkbox" id="terms" required />
-            <label htmlFor="terms" className="auth-checkbox-label">
-              Concordo com os{" "}
-              <a href="#" className="auth-checkbox-link">
-                Termos de Serviço
-              </a>{" "}
-              e{" "}
-              <a href="#" className="auth-checkbox-link">
-                Política de Privacidade
-              </a>
-            </label>
-          </div>
-
           <button
             type="submit"
             className="auth-button auth-button-primary"
@@ -173,29 +141,32 @@ export const Register = () => {
                 Criando conta...
               </>
             ) : (
-              "Criar minha conta"
+              "Criar conta"
             )}
           </button>
         </form>
 
         <div className="auth-divider">
           <div className="auth-divider-line"></div>
-          <span className="auth-divider-text">já tem conta?</span>
+          <span className="auth-divider-text">ou</span>
           <div className="auth-divider-line"></div>
         </div>
 
         <div className="auth-nav">
           <p className="auth-nav-text">
             Já tem uma conta?{" "}
-            <span className="auth-nav-link" onClick={() => navigate("/login")}>
-              Fazer login
+            <span
+              className="auth-nav-link"
+              onClick={() => navigate("/login")}
+            >
+              Entrar
             </span>
           </p>
         </div>
 
         <div className="auth-footer">
           <p className="auth-footer-text">
-            Comece a controlar suas finanças hoje mesmo
+            Gerencie suas finanças de forma inteligente
           </p>
         </div>
       </div>

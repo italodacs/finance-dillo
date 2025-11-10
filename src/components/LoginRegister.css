@@ -1,5 +1,5 @@
 /* ===========================================
-   LOGIN / REGISTER STYLES - FinanceDillo
+   LOGIN / REGISTER STYLES - FinanceDillo (Marrom-Cinza Suave)
    =========================================== */
 
 /* Container Principal */
@@ -9,76 +9,40 @@
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  position: relative;
+  background: #ffffff;
   overflow: hidden;
 }
 
-/* Background Gradients */
-.auth-bg-login {
-  background: linear-gradient(135deg, #ff9f43 0%, #ff6b35 50%, #c85a23 100%);
-}
-
+/* Fundo branco puro */
+.auth-bg-login,
 .auth-bg-register {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: #ffffff;
 }
 
-/* Elementos de Background */
+/* Remove elementos decorativos */
 .auth-bg-elements {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-
-.auth-bg-circle {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  opacity: 0.15;
-  animation: float 6s ease-in-out infinite;
-}
-
-.auth-bg-circle-1 {
-  width: 300px;
-  height: 300px;
-  background: #ff6b35;
-  top: -150px;
-  right: -150px;
-}
-
-.auth-bg-circle-2 {
-  width: 400px;
-  height: 400px;
-  background: #ff9f43;
-  bottom: -200px;
-  left: -200px;
-}
-
-.auth-bg-circle-3 {
-  width: 250px;
-  height: 250px;
-  background: #c85a23;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  display: none;
 }
 
 /* Card Principal */
 .auth-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 20px;
   padding: 2.5rem;
   width: 100%;
-  max-width: 400px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  max-width: 420px;
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.15),
+    0 6px 8px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
 }
 
 .auth-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15),
-    0 0 0 1px rgba(255, 255, 255, 0.2);
+  transform: translateY(-4px);
+  box-shadow:
+    0 18px 28px rgba(0, 0, 0, 0.25),
+    0 8px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Header */
@@ -87,9 +51,10 @@
   margin-bottom: 2rem;
 }
 
+/* Logo */
 .auth-logo {
-  width: 120px;
-  height: 120px;
+  width: 160px;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -98,20 +63,21 @@
 
 .auth-logo-img {
   width: 100%;
-  height: 100%;
+  height: auto;
   object-fit: contain;
   display: block;
 }
 
+/* Título e Subtítulo */
 .auth-title {
   font-size: 2rem;
   font-weight: 700;
-  color: #2d3748;
+  color: #1e293b;
   margin-bottom: 0.5rem;
 }
 
 .auth-subtitle {
-  color: #718096;
+  color: #6b7280;
   font-size: 1rem;
 }
 
@@ -124,13 +90,13 @@
   display: block;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #4a5568;
+  color: #374151;
   margin-bottom: 0.5rem;
 }
 
 .auth-label-required::after {
   content: " *";
-  color: #e53e3e;
+  color: #a16207; /* dourado suave */
 }
 
 .auth-input {
@@ -141,17 +107,17 @@
   background: white;
   font-size: 1rem;
   transition: all 0.3s ease;
-  color: #2d3748;
+  color: #1e293b;
 }
 
 .auth-input:focus {
   outline: none;
-  border-color: #ff6b35;
-  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+  border-color: #7c6a54;
+  box-shadow: 0 0 0 3px rgba(124, 106, 84, 0.15);
 }
 
 .auth-input::placeholder {
-  color: #a0aec0;
+  color: #94a3b8;
 }
 
 /* Botão Principal */
@@ -163,22 +129,36 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
 }
 
+/* 🔹 Gradiente marrom-cinza suave */
 .auth-button-primary {
-  background: linear-gradient(135deg, #ff9f43, #ff6b35);
+  background: linear-gradient(135deg, #8a7354 0%, #5a5a5a 100%);
   color: white;
-  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+  box-shadow:
+    0 6px 0 #3d3d3d,
+    0 4px 12px rgba(0, 0, 0, 0.25);
+  transform: translateY(0);
 }
 
+/* Hover - leve elevação */
 .auth-button-primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6);
+  box-shadow:
+    0 10px 18px rgba(138, 115, 84, 0.5);
+}
+
+/* Efeito “afundar” ao clicar */
+.auth-button-primary:active {
+  transform: translateY(3px);
+  box-shadow:
+    0 3px 0 #2e2e2e,
+    0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .auth-button:disabled {
@@ -187,7 +167,7 @@
   transform: none !important;
 }
 
-/* Loading Spinner */
+/* Spinner */
 .auth-spinner {
   width: 20px;
   height: 20px;
@@ -199,9 +179,9 @@
 
 /* Mensagens de Erro */
 .auth-error {
-  background: #fed7d7;
-  border: 1px solid #feb2b2;
-  color: #c53030;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
   padding: 1rem;
   border-radius: 12px;
   font-size: 0.875rem;
@@ -229,7 +209,7 @@
 
 .auth-divider-text {
   padding: 0 1rem;
-  color: #a0aec0;
+  color: #94a3b8;
   font-size: 0.875rem;
 }
 
@@ -240,11 +220,11 @@
 }
 
 .auth-nav-text {
-  color: #718096;
+  color: #6b7280;
 }
 
 .auth-nav-link {
-  color: #ff6b35;
+  color: #8a7354;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
@@ -260,28 +240,14 @@
 }
 
 .auth-footer-text {
-  color: #a0aec0;
+  color: #94a3b8;
   font-size: 0.875rem;
 }
 
 /* Animações */
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Responsividade */
@@ -292,58 +258,10 @@
   }
 
   .auth-logo {
-    width: 90px;
-    height: 90px;
+    width: 130px;
   }
 
   .auth-title {
     font-size: 1.75rem;
-  }
-}
-
-/* Modo Escuro */
-@media (prefers-color-scheme: dark) {
-  .auth-card {
-    background: rgba(26, 32, 44, 0.95);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: white;
-  }
-
-  .auth-title {
-    color: white;
-  }
-
-  .auth-subtitle {
-    color: #a0aec0;
-  }
-
-  .auth-label {
-    color: #e2e8f0;
-  }
-
-  .auth-input {
-    background: #2d3748;
-    border-color: #4a5568;
-    color: white;
-  }
-
-  .auth-input::placeholder {
-    color: #a0aec0;
-  }
-
-  .auth-divider-line {
-    background: #4a5568;
-  }
-
-  .auth-divider-text {
-    color: #718096;
-  }
-
-  .auth-nav-text {
-    color: #a0aec0;
-  }
-
-  .auth-footer-text {
-    color: #718096;
   }
 }

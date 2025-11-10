@@ -1,7 +1,6 @@
 // src/components/MainLayout.tsx
 import { ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useTheme } from "../context/ThemeContext";
 import logo from "../assets/dillosemfundo.png";
 import "./MainLayout.css";
 
@@ -12,8 +11,6 @@ interface MainLayoutProps {
 export const MainLayout = ({ children }: MainLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { theme, toggleTheme } = useTheme();
-  const isDarkMode = theme === "dark";
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -24,14 +21,11 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   ];
 
   return (
-    <div className={`main-layout ${isDarkMode ? "dark" : ""}`}>
+    <div className="main-layout">
       {/* HEADER SUPERIOR */}
-      <header className={`main-header ${isDarkMode ? "dark" : ""}`}>
+      <header className="main-header">
         <div className="header-top">
-          {/* Espaçador esquerdo para balancear */}
-          <div className="header-spacer"></div>
-
-          {/* Logo + nome centralizados */}
+          {/* Logo central */}
           <div
             className="header-logo-center"
             onClick={() => navigate("/dashboard")}
@@ -47,21 +41,10 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
                 objectFit: "contain",
               }}
             />
-            <span className={`logo-text ${isDarkMode ? "dark" : ""}`}>
+            <span className="logo-text">
               <strong>FinanceDillo</strong>
             </span>
           </div>
-
-          {/* Botão de tema à direita */}
-          <button
-            onClick={toggleTheme}
-            className={`theme-toggle header-theme-btn ${
-              isDarkMode ? "dark" : ""
-            }`}
-            aria-label="Alternar tema"
-          >
-            <div className="toggle-slider">{isDarkMode ? "🌙" : "☀️"}</div>
-          </button>
         </div>
       </header>
 
@@ -71,14 +54,14 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       </main>
 
       {/* NAVBAR INFERIOR (somente mobile) */}
-      <nav className={`bottom-nav ${isDarkMode ? "dark" : ""}`}>
+      <nav className="bottom-nav">
         {navItems.map((item) => (
           <button
             key={item.path}
             onClick={() => navigate(item.path)}
             className={`bottom-nav-item ${
               isActive(item.path) ? "active" : ""
-            } ${isDarkMode ? "dark" : ""}`}
+            }`}
           >
             <span className="bottom-nav-icon">{item.icon}</span>
             <span className="bottom-nav-label">{item.label}</span>

@@ -52,15 +52,15 @@ export const Login = () => {
         <div className="auth-header">
           {/* LOGO centralizada */}
           <div className="auth-logo">
-            <img
-              src="/dillofinancenome.png"
-              alt="DilloFinance"
-              className="auth-logo-img"
-              width={120}
-              height={120}
-              loading="eager"
-              decoding="async"
-            />
+           <img
+  src="/taman.png"
+  alt="FinanceDillo"
+  className="auth-logo-img"
+  width={140}
+  height={140}
+  loading="eager"
+  decoding="async"
+/>
           </div>
 
           <h1 className="auth-title">Bem-vindo de volta</h1>
