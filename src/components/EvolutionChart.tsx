@@ -1,4 +1,3 @@
-// src/components/EvolutionChart.tsx
 import { useEffect, useRef } from "react";
 import "../components/EvolutionChart.css";
 
@@ -11,7 +10,7 @@ interface EvolutionChartProps {
   };
 }
 
-export const EvolutionChart = ({ data }: EvolutionChartProps) => {
+export default function EvolutionChart({ data }: EvolutionChartProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const chartInstanceRef = useRef<any | null>(null);
 
@@ -22,13 +21,13 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
       try {
         const Chart = (await import("chart.js/auto")).default;
 
-        // Destroi gráfico existente se houver
+        // Destroi gráfico anterior antes de recriar
         if (chartInstanceRef.current) {
           chartInstanceRef.current.destroy();
           chartInstanceRef.current = null;
         }
 
-        const ctx = canvasRef.current?.getContext("2d");
+        const ctx = canvasRef.current.getContext("2d");
         if (!ctx) return;
 
         const chart = new Chart(ctx, {
@@ -39,13 +38,13 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
               {
                 label: "Receitas",
                 data: data.receitas,
-                borderColor: "rgb(34, 197, 94)",
-                backgroundColor: "rgba(34, 197, 94, 0.1)",
+                borderColor: "#10b981", // verde
+                backgroundColor: "rgba(16, 185, 129, 0.15)",
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: "rgb(34, 197, 94)",
-                pointBorderColor: "white",
+                pointBackgroundColor: "#10b981",
+                pointBorderColor: "#fff",
                 pointBorderWidth: 2,
                 pointRadius: 5,
                 pointHoverRadius: 7,
@@ -53,13 +52,13 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
               {
                 label: "Despesas",
                 data: data.despesas,
-                borderColor: "rgb(239, 68, 68)",
-                backgroundColor: "rgba(239, 68, 68, 0.1)",
+                borderColor: "#ef4444", // vermelho
+                backgroundColor: "rgba(239, 68, 68, 0.15)",
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: "rgb(239, 68, 68)",
-                pointBorderColor: "white",
+                pointBackgroundColor: "#ef4444",
+                pointBorderColor: "#fff",
                 pointBorderWidth: 2,
                 pointRadius: 5,
                 pointHoverRadius: 7,
@@ -81,12 +80,12 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
               },
               tooltip: {
                 backgroundColor: "rgba(255, 255, 255, 0.9)",
-                titleColor: "#374151",
+                titleColor: "#111827",
                 bodyColor: "#374151",
                 borderColor: "rgba(0, 0, 0, 0.1)",
                 borderWidth: 1,
                 callbacks: {
-                  label: function (context: any) {
+                  label: (context) => {
                     let label = context.dataset.label || "";
                     if (label) label += ": ";
                     if (context.parsed?.y !== null) {
@@ -103,7 +102,7 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
             scales: {
               x: {
                 grid: {
-                  color: "rgba(0, 0, 0, 0.1)",
+                  color: "rgba(0, 0, 0, 0.05)",
                 },
                 ticks: {
                   color: "#6b7280",
@@ -113,17 +112,16 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
               y: {
                 beginAtZero: true,
                 grid: {
-                  color: "rgba(0, 0, 0, 0.1)",
+                  color: "rgba(0, 0, 0, 0.05)",
                 },
                 ticks: {
-                  stepSize: 500,
                   color: "#6b7280",
                   font: { size: 12 },
                   callback: (value) =>
                     "R$ " + Number(value).toLocaleString("pt-BR"),
                 },
                 suggestedMax:
-                  Math.max(...data.receitas, ...data.despesas) * 1.2,
+                  Math.max(...data.receitas, ...data.despesas, 100) * 1.2,
               },
             },
             interaction: { intersect: false, mode: "index" },
@@ -139,6 +137,7 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
 
     initChart();
 
+    // Cleanup ao desmontar
     return () => {
       if (chartInstanceRef.current) {
         chartInstanceRef.current.destroy();
@@ -149,10 +148,8 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
 
   if (!data.months.length) {
     return (
-      <div className="rounded-lg p-6 bg-white h-64 flex items-center justify-center">
-        <p className="text-center text-gray-500">
-          Não há dados suficientes para exibir o gráfico
-        </p>
+      <div className="chart-container bg-white rounded-lg p-6 shadow-sm h-64 flex items-center justify-center">
+        <p className="text-gray-500">Não há dados suficientes para exibir o gráfico.</p>
       </div>
     );
   }
@@ -160,11 +157,11 @@ export const EvolutionChart = ({ data }: EvolutionChartProps) => {
   return (
     <div className="chart-container bg-white rounded-lg p-6 shadow-md">
       <h3 className="text-xl font-semibold mb-4 text-gray-800">
-        Evolução Mensal - Receitas vs Despesas
+        Evolução Mensal — Receitas vs Despesas
       </h3>
-      <div className="h-96">
+      <div className="h-[450px]">
         <canvas ref={canvasRef} />
       </div>
     </div>
   );
-};
+}

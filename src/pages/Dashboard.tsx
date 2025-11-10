@@ -1,7 +1,7 @@
 // src/pages/Dashboard.tsx
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "../lib/supabase";
-import { EvolutionChart } from "../components/EvolutionChart";
+import EvolutionChart from "../components/EvolutionChart"; // ✅ agora com export default
 import "../components/Dashboard.css";
 
 type Transaction = {
@@ -17,13 +17,26 @@ type Transaction = {
   is_parcelada?: boolean | null;
   total_parcelas?: number | null;
   is_recorrente?: boolean | null;
-  recorrencia_meses?: number | null; // 0 == indefinido
+  recorrencia_meses?: number | null;
 };
 
 export const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [error, setError] = useState("");
+  const [monthOffset, setMonthOffset] = useState(0);
+
+  const currentDate = new Date();
+  const selectedMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth() + monthOffset,
+    1
+  );
+
+  const formattedMonth = selectedMonth.toLocaleDateString("pt-BR", {
+    month: "long",
+    year: "numeric",
+  });
 
   useEffect(() => {
     const loadData = async () => {
@@ -48,7 +61,6 @@ export const Dashboard = () => {
           .order("date", { ascending: false });
 
         if (error) throw error;
-
         setTransactions((data || []) as Transaction[]);
       } catch (err: any) {
         console.error(err);
@@ -61,18 +73,17 @@ export const Dashboard = () => {
     loadData();
   }, []);
 
-  // === Função que prepara dados para o gráfico e resumo ===
+  // ✅ Mostrar apenas 2 meses passados e 4 futuros no gráfico
   const prepareChartData = (txs: Transaction[]) => {
     if (!txs || txs.length === 0) {
       return { months: [], saldo: [], receitas: [], despesas: [] };
     }
 
     const monthsArray: string[] = [];
-    const monthlyData: Record<string, { receitas: number; despesas: number }> =
-      {};
+    const monthlyData: Record<string, { receitas: number; despesas: number }> = {};
     const today = new Date();
 
-    for (let i = -6; i <= 6; i++) {
+    for (let i = -2; i <= 4; i++) {
       const date = new Date(today.getFullYear(), today.getMonth() + i, 1);
       const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1)
         .toString()
@@ -92,7 +103,6 @@ export const Dashboard = () => {
       const baseM = baseDate.getMonth() + 1;
       const amount = parseFloat(String(t.amount)) || 0;
 
-      // 1) Recorrentes
       if (t.is_recorrente) {
         const totalMeses =
           t.recorrencia_meses && t.recorrencia_meses > 0
@@ -103,9 +113,7 @@ export const Dashboard = () => {
           const d = new Date(baseY, baseM - 1 + i, 1);
           const y = d.getFullYear();
           const m = d.getMonth() + 1;
-
           if (!isInWindow(y, m)) continue;
-
           const mk = `${y}-${String(m).padStart(2, "0")}`;
           if (t.type === "income") monthlyData[mk].receitas += amount;
           else monthlyData[mk].despesas += amount;
@@ -113,17 +121,13 @@ export const Dashboard = () => {
         return;
       }
 
-      // 2) Parceladas
       if (t.is_parcelada && t.total_parcelas && t.total_parcelas > 0) {
         const parcela = amount / t.total_parcelas;
-
         for (let i = 0; i < t.total_parcelas; i++) {
           const d = new Date(baseY, baseM - 1 + i, 1);
           const y = d.getFullYear();
           const m = d.getMonth() + 1;
-
           if (!isInWindow(y, m)) continue;
-
           const mk = `${y}-${String(m).padStart(2, "0")}`;
           if (t.type === "income") monthlyData[mk].receitas += parcela;
           else monthlyData[mk].despesas += parcela;
@@ -131,7 +135,6 @@ export const Dashboard = () => {
         return;
       }
 
-      // 3) Avulsas
       const baseKey = `${baseY}-${String(baseM).padStart(2, "0")}`;
       if (monthlyData[baseKey]) {
         if (t.type === "income") monthlyData[baseKey].receitas += amount;
@@ -142,10 +145,10 @@ export const Dashboard = () => {
     const sorted = monthsArray.sort();
     const months = sorted.map((mk) => {
       const [y, m] = mk.split("-");
-      return new Date(parseInt(y), parseInt(m) - 1).toLocaleDateString(
-        "pt-BR",
-        { month: "short", year: "numeric" }
-      );
+      return new Date(parseInt(y), parseInt(m) - 1).toLocaleDateString("pt-BR", {
+        month: "short",
+        year: "numeric",
+      });
     });
 
     const receitas = sorted.map((mk) => monthlyData[mk].receitas);
@@ -157,31 +160,22 @@ export const Dashboard = () => {
     return { months, saldo, receitas, despesas };
   };
 
-  // Dados do gráfico e dos cards
-  const chartData = useMemo(
-    () => prepareChartData(transactions),
-    [transactions]
-  );
+  const chartData = useMemo(() => prepareChartData(transactions), [transactions]);
 
-  // Totais do mês atual
   const { receitaMes, despesaMes } = useMemo(() => {
-    const now = new Date();
-    const mesAtualFormatado = now.toLocaleDateString("pt-BR", {
+    const mesAtualFormatado = selectedMonth.toLocaleDateString("pt-BR", {
       month: "short",
       year: "numeric",
     });
 
     const idx = chartData.months.findIndex((m) => m === mesAtualFormatado);
-
-    if (idx === -1) {
-      return { receitaMes: 0, despesaMes: 0 };
-    }
+    if (idx === -1) return { receitaMes: 0, despesaMes: 0 };
 
     return {
       receitaMes: chartData.receitas[idx],
       despesaMes: chartData.despesas[idx],
     };
-  }, [chartData]);
+  }, [chartData, selectedMonth]);
 
   const formatCurrency = (n: number) =>
     new Intl.NumberFormat("pt-BR", {
@@ -200,51 +194,59 @@ export const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      {/* Header */}
       <div className="dashboard-header">
         <h1 className="dashboard-title">Dashboard</h1>
-        <p className="dashboard-subtitle">Resumo da sua vida financeira</p>
+
+        <div className="month-navigation">
+          <button
+            className="month-nav-btn"
+            onClick={() => setMonthOffset((prev) => prev - 1)}
+          >
+            ←
+          </button>
+          <span className="current-month">{formattedMonth}</span>
+          <button
+            className="month-nav-btn"
+            onClick={() => setMonthOffset((prev) => prev + 1)}
+          >
+            →
+          </button>
+        </div>
       </div>
 
       {/* Cards */}
       <div className="summary-cards">
         <div className="summary-card">
           <div className="summary-card-header">
-            <span className="summary-card-title">Receitas (mês)</span>
+            <span className="summary-card-title">Receitas</span>
             <span className="summary-card-indicator indicator-positive" />
           </div>
           <div className="summary-card-value value-positive">
             {formatCurrency(receitaMes)}
           </div>
-          <div className="summary-card-trend">Entradas do mês atual</div>
         </div>
 
         <div className="summary-card">
           <div className="summary-card-header">
-            <span className="summary-card-title">Despesas (mês)</span>
+            <span className="summary-card-title">Despesas</span>
             <span className="summary-card-indicator indicator-negative" />
           </div>
           <div className="summary-card-value value-negative">
             {formatCurrency(despesaMes)}
           </div>
-          <div className="summary-card-trend">Saídas do mês atual</div>
         </div>
 
         <div className="summary-card">
           <div className="summary-card-header">
-            <span className="summary-card-title">Saldo (mês)</span>
-            <span className="summary-card-indicator" />
+            <span className="summary-card-title">Saldo</span>
           </div>
           <div
             className={`summary-card-value ${
-              receitaMes - despesaMes >= 0
-                ? "value-positive"
-                : "value-negative"
+              receitaMes - despesaMes >= 0 ? "value-positive" : "value-negative"
             }`}
           >
             {formatCurrency(receitaMes - despesaMes)}
           </div>
-          <div className="summary-card-trend">Receitas - Despesas</div>
         </div>
       </div>
 
@@ -253,7 +255,7 @@ export const Dashboard = () => {
         <EvolutionChart data={chartData} />
       </div>
 
-      {/* Lista de transações */}
+      {/* Transações */}
       <div className="all-transactions">
         <div className="transactions-header">
           <h3 className="transactions-title">Transações recentes</h3>
@@ -268,63 +270,79 @@ export const Dashboard = () => {
             <div className="empty-title">Erro ao carregar</div>
             <p className="empty-description">{error}</p>
           </div>
-        ) : transactions.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-icon">💸</div>
-            <div className="empty-title">Sem transações ainda</div>
-            <p className="empty-description">
-              Registre sua primeira transação para ver o resumo aqui.
-            </p>
-            <button
-              className="empty-action-button"
-              onClick={() => (window.location.href = "/transactions")}
-            >
-              Nova transação
-            </button>
-          </div>
         ) : (
-          <div className="transactions-list">
-            {transactions.slice(0, 8).map((t) => {
-              const isIncome = t.type === "income";
+          (() => {
+            const filteredTransactions = transactions.filter((t) => {
+              const d = new Date(t.date);
               return (
-                <div key={t.id} className="transaction-item">
-                  <div className="transaction-info">
-                    <div className="transaction-description">
-                      {t.description || "Sem descrição"}
-                    </div>
-                    <div className="transaction-meta">
-                      <span
-                        className={`transaction-type ${
-                          isIncome ? "type-income" : "type-expense"
-                        }`}
-                      >
-                        {isIncome ? "Receita" : "Despesa"}
-                      </span>
-                      <span className="transaction-date">
-                        {new Date(t.date).toLocaleDateString("pt-BR")}
-                      </span>
-                      {t.category && (
-                        <span className="transaction-category">
-                          {t.category}
-                        </span>
-                      )}
-                      {t.is_credit && (
-                        <span className="transaction-credit">💳 Crédito</span>
-                      )}
-                    </div>
-                  </div>
-                  <div
-                    className={`transaction-amount ${
-                      isIncome ? "amount-income" : "amount-expense"
-                    }`}
+                d.getMonth() === selectedMonth.getMonth() &&
+                d.getFullYear() === selectedMonth.getFullYear()
+              );
+            });
+
+            if (filteredTransactions.length === 0) {
+              return (
+                <div className="empty-state">
+                  <div className="empty-icon">💸</div>
+                  <div className="empty-title">Sem transações neste mês</div>
+                  <p className="empty-description">
+                    Registre uma nova transação para ver aqui.
+                  </p>
+                  <button
+                    className="empty-action-button"
+                    onClick={() => (window.location.href = "/transactions")}
                   >
-                    {isIncome ? "+" : "-"}
-                    {formatCurrency(Number(t.amount))}
-                  </div>
+                    Nova transação
+                  </button>
                 </div>
               );
-            })}
-          </div>
+            }
+
+            return (
+              <div className="transactions-list">
+                {filteredTransactions.slice(0, 8).map((t) => {
+                  const isIncome = t.type === "income";
+                  return (
+                    <div key={t.id} className="transaction-item">
+                      <div className="transaction-info">
+                        <div className="transaction-description">
+                          {t.description || "Sem descrição"}
+                        </div>
+                        <div className="transaction-meta">
+                          <span
+                            className={`transaction-type ${
+                              isIncome ? "type-income" : "type-expense"
+                            }`}
+                          >
+                            {isIncome ? "Receita" : "Despesa"}
+                          </span>
+                          <span className="transaction-date">
+                            {new Date(t.date).toLocaleDateString("pt-BR")}
+                          </span>
+                          {t.category && (
+                            <span className="transaction-category">
+                              {t.category}
+                            </span>
+                          )}
+                          {t.is_credit && (
+                            <span className="transaction-credit">💳 Crédito</span>
+                          )}
+                        </div>
+                      </div>
+                      <div
+                        className={`transaction-amount ${
+                          isIncome ? "amount-income" : "amount-expense"
+                        }`}
+                      >
+                        {isIncome ? "+" : "-"}
+                        {formatCurrency(Number(t.amount))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()
         )}
       </div>
     </div>

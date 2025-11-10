@@ -108,17 +108,16 @@
   color: #8a7354;
 }
 
+/* Aba ativa: apenas o texto marrom */
 .bottom-nav-item.active {
   color: #8a7354;
-  font-weight: 600;
   transform: translateY(-2px);
 }
 
+/* Ícone mantém cor normal */
 .bottom-nav-item.active .bottom-nav-icon {
-  background: linear-gradient(135deg, #8a7354, #5a5a5a);
-  background-clip: text; /* <-- padrão (corrige o aviso) */
-  -webkit-background-clip: text; /* necessário para Chrome/Safari */
-  -webkit-text-fill-color: transparent;
+  color: #64748b; /* cinza neutro, sem degradê */
+  background: none;
 }
 
 .bottom-nav-icon {

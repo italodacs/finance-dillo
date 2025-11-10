@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import logo from "../assets/taman.png";
+import logo from "../taman.png";
 import "./MainLayout.css";
 
 interface MainLayoutProps {
@@ -28,11 +28,11 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             className="header-logo-center"
             onClick={() => navigate("/dashboard")}
           >
-            <img
-              src={logo}
-              alt="Logo"
-              className="logo-image"
-            />
+           <img
+  src="/taman.png"
+  alt="Logo"
+  className="logo-image"
+/>
           </div>
         </div>
       </header>
