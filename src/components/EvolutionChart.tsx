@@ -15,6 +15,7 @@ export default function EvolutionChart({ data }: EvolutionChartProps) {
   const chartInstanceRef = useRef<any | null>(null);
 
   useEffect(() => {
+    // ✅ Se não houver dados ou referência, sai
     if (!canvasRef.current || !data.months.length) return;
 
     const initChart = async () => {
@@ -27,7 +28,11 @@ export default function EvolutionChart({ data }: EvolutionChartProps) {
           chartInstanceRef.current = null;
         }
 
-        const ctx = canvasRef.current.getContext("2d");
+        // ✅ Corrigido: checagem explícita contra null
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
         const chart = new Chart(ctx, {
@@ -38,7 +43,7 @@ export default function EvolutionChart({ data }: EvolutionChartProps) {
               {
                 label: "Receitas",
                 data: data.receitas,
-                borderColor: "#10b981", // verde
+                borderColor: "#10b981",
                 backgroundColor: "rgba(16, 185, 129, 0.15)",
                 borderWidth: 3,
                 fill: true,
@@ -52,7 +57,7 @@ export default function EvolutionChart({ data }: EvolutionChartProps) {
               {
                 label: "Despesas",
                 data: data.despesas,
-                borderColor: "#ef4444", // vermelho
+                borderColor: "#ef4444",
                 backgroundColor: "rgba(239, 68, 68, 0.15)",
                 borderWidth: 3,
                 fill: true,
@@ -101,19 +106,12 @@ export default function EvolutionChart({ data }: EvolutionChartProps) {
             },
             scales: {
               x: {
-                grid: {
-                  color: "rgba(0, 0, 0, 0.05)",
-                },
-                ticks: {
-                  color: "#6b7280",
-                  font: { size: 12 },
-                },
+                grid: { color: "rgba(0, 0, 0, 0.05)" },
+                ticks: { color: "#6b7280", font: { size: 12 } },
               },
               y: {
                 beginAtZero: true,
-                grid: {
-                  color: "rgba(0, 0, 0, 0.05)",
-                },
+                grid: { color: "rgba(0, 0, 0, 0.05)" },
                 ticks: {
                   color: "#6b7280",
                   font: { size: 12 },
@@ -148,14 +146,14 @@ export default function EvolutionChart({ data }: EvolutionChartProps) {
 
   if (!data.months.length) {
     return (
-      <div className="chart-container bg-white rounded-lg p-6 shadow-sm h-64 flex items-center justify-center">
+      <div className="chart-container">
         <p className="text-gray-500">Não há dados suficientes para exibir o gráfico.</p>
       </div>
     );
   }
 
   return (
-    <div className="chart-container bg-white rounded-lg p-6 shadow-md">
+    <div className="chart-container">
       <h3 className="text-xl font-semibold mb-4 text-gray-800">
         Evolução Mensal — Receitas vs Despesas
       </h3>
