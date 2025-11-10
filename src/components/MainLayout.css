@@ -151,3 +151,10 @@
     width: 42px;
   }
 }
+
+.bottom-nav-icon-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  margin-bottom: 4px;
+}

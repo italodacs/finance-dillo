@@ -1,6 +1,12 @@
 import { ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../taman.png";
+
+// Importa as imagens do diretório assets
+import painelIcon from "../assets/painel-de-controle.png";
+import transacaoIcon from "../assets/transacao.png";
+import pessoaIcon from "../assets/pessoa.png";
+
 import "./MainLayout.css";
 
 interface MainLayoutProps {
@@ -14,9 +20,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   const isActive = (path: string) => location.pathname === path;
 
   const navItems = [
-    { path: "/dashboard", label: "Dashboard", icon: "📊" },
-    { path: "/transactions", label: "Transações", icon: "💳" },
-    { path: "/profile", label: "Perfil", icon: "👤" },
+    { path: "/dashboard", label: "Dashboard", icon: painelIcon },
+    { path: "/transactions", label: "Transações", icon: transacaoIcon },
+    { path: "/profile", label: "Perfil", icon: pessoaIcon },
   ];
 
   return (
@@ -28,11 +34,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             className="header-logo-center"
             onClick={() => navigate("/dashboard")}
           >
-           <img
-  src="/taman.png"
-  alt="Logo"
-  className="logo-image"
-/>
+            <img src={logo} alt="Logo" className="logo-image" />
           </div>
         </div>
       </header>
@@ -52,7 +54,11 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               isActive(item.path) ? "active" : ""
             }`}
           >
-            <span className="bottom-nav-icon">{item.icon}</span>
+            <img
+              src={item.icon}
+              alt={item.label}
+              className="bottom-nav-icon-img"
+            />
             <span className="bottom-nav-label">{item.label}</span>
           </button>
         ))}
